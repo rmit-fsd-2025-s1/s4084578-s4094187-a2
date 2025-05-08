@@ -1,29 +1,10 @@
 # s4084578-s4094187-a1
-Full Stack Development Assignment 1 (Ryan Favaloro (s4084578) and Aaron Tran (s4094187))
-https://github.com/rmit-fsd-2025-s1/s4084578-s4094187-a1
+Full Stack Development Assignment 2 (Ryan Favaloro (s4084578) and Aaron Tran (s4094187))
+https://github.com/rmit-fsd-2025-s1/s4084578-s4094187-a2
 
-Aaron Tran has accidentally made commits under his personal account NoobD00d.
-A discussion posted in canvas has stated that this is not an issue.
 
-Upon a successful login, the localstorage value "login" will be updated with "lecturer" or "tutor", based on whether the account is associated with a lecturer or tutor. Only lecturers can access the lecturer page, with the validation being done by checking the localstorage value (tutor page has a similar feature). This can be bypassed by manually setting the localstorage value for "login" to "admin", allowing access to both pages. This override will need to be applied every time there is a new login.
 
-Sample logins include:
-    Email: Admin@rmit.edu.au
-    Password: password
-    #This login gives access to both lecturer and tutor pages. Dummy tutor details will be displayed in the tutor page but not lecturer
 
-    Email: Lecturer@rmit.edu.au
-    Password: password
-    #This login gives access to only lecturer page
-    
-    Email: JohnDoe@rmit.edu.au
-    Password: password
-    #This login gives access to sample character John Doe's tutor page
-
-    Other tutor logins can be found in the _app.tsx file starting at line 13 in the array. 
-    The login details will be the first 2 elements of each account and give access to their unique information.
-
-Some unit tests have been set up using Jest. Run "npm test" in terminal from the project's root directory to run the tests.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
