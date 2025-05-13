@@ -24,17 +24,17 @@ const Navigation = () => {
           </Link>
         </li>
         <li>
+          <Link href="/signup" className="nav-link">
+            Sign Up
+          </Link>
+        </li>
+        <li>
           <Link href="/login" className="nav-link">
             Login
           </Link>
         </li>
         <li>
           <Link href="/" className="nav-link">
-            Sign Up
-          </Link>
-        </li>
-        <li>
-          <Link href="/signup" className="nav-link">
             Logout
           </Link>
         </li>
