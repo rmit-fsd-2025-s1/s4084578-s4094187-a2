@@ -9,33 +9,33 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
+  @Column({ default: false })
   lecturer: boolean;
 
-  @Column({ unique: true })
+  @Column({ default: false })
   selected: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   skills: string;
 
-  @Column()
+  @Column({ nullable: true })
   creds: string;
 
-  @Column()
+  @Column({ nullable: true })
   courses: string;
 
-  @Column()
+  @Column({ nullable: true })
   available: string;
 
-  @Column()
+  @Column({ default: 0 })
   timesSelected: number;
 }
