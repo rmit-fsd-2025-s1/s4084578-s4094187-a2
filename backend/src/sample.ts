@@ -13,7 +13,8 @@ const sampleUsers = [
         creds: "All",
         courses: "All",
         available: "Full Time",
-        timesSelected: 0
+        timesSelected: 0,
+        blocked: false
       },
       {
         //Lecturer Login Data
@@ -26,7 +27,8 @@ const sampleUsers = [
         creds: "All",
         courses: "All",
         available: "Full Time",
-        timesSelected: 0
+        timesSelected: 0,
+        blocked: false
       },
       {
         email: "JohnDoe@rmit.edu.au",
@@ -38,7 +40,8 @@ const sampleUsers = [
         creds: "Bachelor of Computer Science",
         courses: "Software Engineering Fundamentals, Introduction to Cyber Security",
         available: "Part Time",
-        timesSelected: 0
+        timesSelected: 0,
+        blocked: false
       },
       {
         email: "LilySmith@rmit.edu.au",
@@ -50,7 +53,8 @@ const sampleUsers = [
         creds: "Bachelor of Software Engineering",
         courses: "Algorithms and Analysis, Full Stack Development",
         available: "Part Time",
-        timesSelected: 2
+        timesSelected: 2,
+        blocked: false
       },
       {
         email: "MaxPayne@rmit.edu.au",
@@ -62,7 +66,8 @@ const sampleUsers = [
         creds: "Bachelor of IT",
         courses: "Full Stack Development, Software Engineering Fundamentals",
         available: "Full Time",
-        timesSelected: 3
+        timesSelected: 3,
+        blocked: false
       },
       {
         email: "RichardMiles@rmit.edu.au",
@@ -74,7 +79,8 @@ const sampleUsers = [
         creds: "Bachelor of Software Engineering",
         courses: "Full Stack Development, Algorithms and Analysis",
         available: "Full Time",
-        timesSelected: 2
+        timesSelected: 2,
+        blocked: false
       },
       {
         email: "SteveJoes@rmit.edu.au",
@@ -86,7 +92,8 @@ const sampleUsers = [
         creds: "Bachelor of Computer Science",
         courses: "Software Engineering Fundamentals, Algorithms and Analysis",
         available: "Part Time",
-        timesSelected: 5
+        timesSelected: 5,
+        blocked: false
       },
       {
         email: "BallGates@rmit.edu.au",
@@ -98,7 +105,8 @@ const sampleUsers = [
         creds: "Bachelor of IT",
         courses: "Software Engineering Fundamentals, Introduction to Cyber Security",
         available: "Part Time",
-        timesSelected: 4
+        timesSelected: 4,
+        blocked: false
       }
     ];
 

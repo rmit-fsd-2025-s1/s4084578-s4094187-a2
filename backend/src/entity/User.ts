@@ -38,4 +38,7 @@ export class User {
 
   @Column({ default: 0 })
   timesSelected: number;
+
+  @Column({ default: false })
+  blocked: boolean;
 }
