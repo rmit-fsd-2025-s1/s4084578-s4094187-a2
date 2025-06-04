@@ -72,44 +72,42 @@ export default function Home() {
     }
   }
 
-  function checkLogin() {
-    //Details compared to localStorage info
-    let key = 0;
-    let userInfo = JSON.parse(localStorage.getItem("userInfo" + key) || 'null');
-    let email = userInfo.Email;
-    let password = userInfo.Password;
-    //Iterate through stored userInfo
-    //While loop is used because foreach and map cannot break
-    while (email != logEmail || password != logPassword) {
-      if (localStorage.getItem("userInfo" + key) != null) {
-        userInfo = JSON.parse(localStorage.getItem("userInfo" + key) || 'null');
-        email = userInfo.Email;
-        password = userInfo.Password;
-        ++key;
+  async function checkLogin() {
+    try {
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: logEmail,
+          password: logPassword,
+        }),
+      });
+
+      const user = await res.json();
+
+      if (!res.ok) {
+        alert(user.message || "Invalid credentials");
+        return;
       }
-      else {
-        alert("Wrong Input");
-        break;
-      }
-    }
-    if (email == logEmail && password == logPassword) {
-      localStorage.setItem("account", email)
-      if (userInfo.Name == "Admin") {  
-        localStorage.setItem("login", "admin")
-        //alert("correct admin input");
+
+      // Save email and role to localStorage
+      localStorage.setItem("account", user.email);
+
+      if (user.name === "Admin") {
+        localStorage.setItem("login", "admin");
         window.location.href = "/lecturers";
-      }
-      else if (userInfo.Lecturer == true) {  
-        localStorage.setItem("login", "lecturer")
-        //alert("correct lecturer input");
+      } else if (user.lecturer === true) {
+        localStorage.setItem("login", "lecturer");
         window.location.href = "/lecturers";
-      }
-      else {
-        localStorage.setItem("login", "tutor")
-        //alert("correct tutor input");
+      } else {
+        localStorage.setItem("login", "tutor");
         window.location.href = "/tutors";
       }
+    } catch (err) {
+      console.error("Login failed:", err);
+      alert("Something went wrong during login.");
     }
   }
+
 }
   
