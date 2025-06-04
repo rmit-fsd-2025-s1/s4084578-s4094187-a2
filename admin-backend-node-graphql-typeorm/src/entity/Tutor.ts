@@ -15,7 +15,7 @@ export class Tutor {
     @Column({ type: "varchar", length: 255})
     name: string;
 
-    @Column({ type: "tinyint", length: 1})
+    @Column({ type: "tinyint"})
     available_full_time: boolean;
 
     @Column({ type: "varchar", length: 255})
@@ -24,6 +24,6 @@ export class Tutor {
     @Column({ type: "varchar", length: 255})
     credentials: string;
 
-    @Column({ type: "tinyint", length: 1})
+    @Column({ type: "tinyint"})
     blocked: boolean;
 }
