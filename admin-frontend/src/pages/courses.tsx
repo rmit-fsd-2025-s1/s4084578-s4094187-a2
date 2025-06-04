@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      Welcome to the TeachTeam admin app.
+      This page will be used to add, edit and delete courses.
     </div>
   );
 }
