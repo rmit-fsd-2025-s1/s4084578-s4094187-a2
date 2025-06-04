@@ -42,10 +42,11 @@ export class UserController {
    * @returns JSON response containing the created user or error message
    */
   async save(request: Request, response: Response) {
-    const { email, password, lecturer, selected, name, skills, creds, courses, available, timesSelected, blocked } = request.body;
+    const { email, joinDate, password, lecturer, selected, name, skills, creds, courses, available, timesSelected, blocked } = request.body;
 
     const user = Object.assign(new User(), {
-      email, 
+      email,
+      joinDate, 
       password, 
       lecturer, 
       selected, 
@@ -54,7 +55,8 @@ export class UserController {
       creds, 
       courses, 
       available, 
-      timesSelected
+      timesSelected,
+      blocked
     });
 
     try {
@@ -95,7 +97,7 @@ export class UserController {
    */
   async update(request: Request, response: Response) {
     const id = parseInt(request.params.id);
-    const { email, password, lecturer, selected, name, skills, creds, courses, available, timesSelected, blocked } = request.body;
+    const { email, joinDate, password, lecturer, selected, name, skills, creds, courses, available, timesSelected, blocked } = request.body;
 
     let userToUpdate = await this.userRepository.findOne({
       where: { id },
@@ -106,7 +108,8 @@ export class UserController {
     }
 
     userToUpdate = Object.assign(userToUpdate, {
-      email, 
+      email,
+      joinDate, 
       password, 
       lecturer, 
       selected, 
