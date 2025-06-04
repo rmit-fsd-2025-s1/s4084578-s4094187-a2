@@ -3,3 +3,4 @@
 .next
 .swc
 .DS_Store
+*.vpp.*
