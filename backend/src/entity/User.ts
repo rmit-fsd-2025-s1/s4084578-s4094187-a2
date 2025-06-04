@@ -2,8 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
@@ -12,20 +10,32 @@ export class User {
   id: number;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
-  @Column({ unique: true })
   email: string;
 
   @Column()
-  age: number;
+  password: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column()
+  lecturer: boolean;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column({ unique: true })
+  selected: boolean;
+
+  @Column()
+  name: string;
+
+  @Column()
+  skills: string;
+
+  @Column()
+  creds: string;
+
+  @Column()
+  courses: string;
+
+  @Column()
+  available: string;
+
+  @Column()
+  timesSelected: number;
 }
