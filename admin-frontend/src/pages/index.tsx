@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      Test
+      Welcome to the TeachTeam admin app.
     </div>
   );
 }
