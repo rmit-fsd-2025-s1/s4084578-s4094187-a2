@@ -3,5 +3,4 @@
 .next
 .swc
 .DS_Store
-database_diagram.vpp.bak_000f
-database_diagram.vpp.bak_001d
+*.vpp.*

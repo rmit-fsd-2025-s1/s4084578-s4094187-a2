@@ -10,6 +10,7 @@ export const typeDefs = gql`
     id: ID!
     email: String!
     password: String!
+    name: String!
   }
 
   type Tutor {
@@ -20,6 +21,7 @@ export const typeDefs = gql`
     available_full_time: Boolean!
     skills_list: String!
     academic_credentials: String!
+    blocked: Boolean!
   }
 
   type Query { 
