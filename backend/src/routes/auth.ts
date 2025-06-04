@@ -23,4 +23,28 @@ router.post("/login", async(req, res) => {
   });
 });
 
+router.get("/profile", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    res.status(400).json({ message: "Email is required" });
+    return;
+  }
+
+  try {
+    const userRepo = AppDataSource.getRepository(User);
+    const user = await userRepo.findOneBy({ email: email as string });
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
