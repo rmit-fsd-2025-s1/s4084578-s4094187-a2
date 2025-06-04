@@ -4,6 +4,9 @@ import {
   FormErrorMessage,
   FormHelperText,
   Input,
+  Button,
+  Box,
+  useToast
 } from '@chakra-ui/react';
 import { useState} from "react";
 import Layout from "../components/Layout";
@@ -13,6 +16,7 @@ import Link from "next/link";
 export default function Home() {
   const [logEmail, setLogEmail] = useState("");
   const [logPassword, setLogPassword] = useState("");
+  const toast = useToast();
 
   //Determine parameters for valid inputs
   const invalidEmail = !logEmail.endsWith("@rmit.edu.au");
@@ -65,7 +69,14 @@ export default function Home() {
   //Checks if inputs are valid before passing them through
   function handleSubmission() {
     if (invalidEmail || invalidPassword) {
-      alert("email or password invalid")
+      toast({
+        title: "Invalid input",
+        description: "Please enter a valid email and password.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
     }
     else {
       checkLogin();
@@ -86,26 +97,50 @@ export default function Home() {
       const user = await res.json();
 
       if (!res.ok) {
-        alert(user.message || "Invalid credentials");
+        toast({
+          title: "Login failed",
+          description: user.message || "Invalid credentials",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
         return;
       }
 
       // Save email and role to localStorage
       localStorage.setItem("account", user.email);
 
-      if (user.name === "Admin") {
-        localStorage.setItem("login", "admin");
-        window.location.href = "/lecturers";
-      } else if (user.lecturer === true) {
-        localStorage.setItem("login", "lecturer");
-        window.location.href = "/lecturers";
-      } else {
-        localStorage.setItem("login", "tutor");
-        window.location.href = "/tutors";
-      }
+      // Show confirmation before redirecting
+      toast({
+        title: `Welcome, ${user.name || "User"}!`,
+        description: "You have successfully logged in.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      setTimeout(() => {
+        if (user.name === "Admin") {
+          localStorage.setItem("login", "admin");
+          window.location.href = "/lecturers";
+        } else if (user.lecturer === true) {
+          localStorage.setItem("login", "lecturer");
+          window.location.href = "/lecturers";
+        } else {
+          localStorage.setItem("login", "tutor");
+          window.location.href = "/tutors";
+        }}, 3000); // wait 3 seconds for toast to show
     } catch (err) {
       console.error("Login failed:", err);
-      alert("Something went wrong during login.");
+      toast({
+        title: "Login error",
+        description: "Something went wrong during login.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
     }
   }
 
