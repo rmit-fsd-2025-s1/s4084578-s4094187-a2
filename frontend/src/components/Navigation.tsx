@@ -1,10 +1,28 @@
 // normally, it would make sense to combine this page with header.tsx, however the specifications can be interpreted
 // such that both a navigation page and a header are required.
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Navigation = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const login = localStorage.getItem("login");
+    if (login === "admin" || login === "lecturer" || login === "tutor") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("login");
+    localStorage.removeItem("account");
+    setIsLoggedIn(false);
+    window.location.href = "/" // redirect to home
+  };
+
   return (
     <div className="nav">
       <ul className="nav-list">
@@ -23,21 +41,27 @@ const Navigation = () => {
             Tutors
           </Link>
         </li>
-        <li>
-          <Link href="/signup" className="nav-link">
-            Sign Up
-          </Link>
-        </li>
-        <li>
-          <Link href="/login" className="nav-link">
-            Login
-          </Link>
-        </li>
-        <li>
-          <Link href="/" className="nav-link">
-            Logout
-          </Link>
-        </li>
+        {!isLoggedIn && (
+          <>
+            <li>
+              <Link href="/signup" className="nav-link">
+                Sign Up
+              </Link>
+            </li>
+            <li>
+              <Link href="/login" className="nav-link">
+                Login
+              </Link>
+            </li>
+          </>
+        )}
+        {isLoggedIn && (
+          <li>
+            <button onClick={handleLogout} className="nav-link">
+              Logout
+            </button>
+          </li>
+        )}
       </ul>
     </div>
   );

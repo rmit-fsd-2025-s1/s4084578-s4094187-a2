@@ -123,14 +123,16 @@ export default function Home() {
       setTimeout(() => {
         if (user.name === "Admin") {
           localStorage.setItem("login", "admin");
-          window.location.href = "/lecturers";
+          //window.location.href = "/lecturers";
         } else if (user.lecturer === true) {
           localStorage.setItem("login", "lecturer");
-          window.location.href = "/lecturers";
+          //window.location.href = "/lecturers";
         } else {
           localStorage.setItem("login", "tutor");
-          window.location.href = "/tutors";
-        }}, 3000); // wait 3 seconds for toast to show
+          //window.location.href = "/tutors";
+        }
+        window.location.href = "/";
+      }, 3000); // wait 3 seconds for toast to show
     } catch (err) {
       console.error("Login failed:", err);
       toast({
