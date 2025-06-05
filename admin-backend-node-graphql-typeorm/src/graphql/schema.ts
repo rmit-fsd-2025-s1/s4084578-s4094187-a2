@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 export const typeDefs = gql`
   type Course {
     id: ID!
+    course_id: Int!
     name: String!
   }
 
@@ -26,5 +27,10 @@ export const typeDefs = gql`
 
   type Query { 
     hello: String!
+    courses: [Course!]!
+  }
+
+  type Mutation {
+    createCourse(course_id: Int!, name: String!): Course
   }
 `;
