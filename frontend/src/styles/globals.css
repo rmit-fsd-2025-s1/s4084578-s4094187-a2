@@ -30,12 +30,21 @@
 
 .nav-list {
   list-style: none;
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  margin: 0;
+  padding: 0 2rem;
 }
 
 .nav-list li {
   display: inline-block;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
 }
 
 .footer {
