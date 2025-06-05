@@ -23,15 +23,30 @@ export default function Home() {
       setLecturerLoginExists(true)
     }
 
-    fetch('http://your-api-domain.com/api/tutors')
-      .then(res => res.json())
-      .then(data => {
+    const fetchTutors = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/tutors/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+        const data = await response.json();
         setTutors(data);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching tutors:', error);
-      });
-  }, []);
+      }
+    };
+
+    if (searchTerm) {
+      fetchTutors();
+    } else {
+      // Fetch all tutors if no search term is provided
+      fetch('http://localhost:5000/api/tutors')
+        .then(res => res.json())
+        .then(data => {
+          setTutors(data);
+        })
+        .catch(error => {
+          console.error('Error fetching tutors:', error);
+        });
+    }
+  }, [searchTerm]);
 
   //Message if not logged in
   if (!lecturerLoginExists) {
@@ -45,14 +60,14 @@ export default function Home() {
   // Handle checkbox toggle
   const handleCheckboxChange = async (name: string) => {
     const updatedTutors = tutors.map(tutor =>
-      tutor.Name === name ? { ...tutor, Selected: !tutor.Selected } : tutor
+      tutor.name === name ? { ...tutor, Selected: !tutor.Selected } : tutor
     );
     setTutors(updatedTutors);
 
-    const updatedTutor = updatedTutors.find(t => t.Name === name);
+    const updatedTutor = updatedTutors.find(t => t.name === name);
     if (updatedTutor) {
       try {
-        await fetch(`http://your-api-domain.com/api/tutors/${updatedTutor.id}`, {
+        await fetch(`http://localhost:5000/api/tutors/${updatedTutor.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedTutor)
@@ -76,17 +91,8 @@ export default function Home() {
     }
   };
 
-  // Choose columns to check when search filtering, not case sensitive
-  const searchedTutors = tutors.filter(tutor =>
-    tutor.Name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tutor.Skills.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tutor.Creds.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tutor.Available.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tutor.Courses.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   //Sort tutors in this function according to search and give a sorted array
-  const sortedTutors = [...searchedTutors].sort((a, b) => {
+  const sortedTutors = [...tutors].sort((a, b) => {
     if (!sortColumn) return 0;
   
     const valA = a[sortColumn];
@@ -145,21 +151,21 @@ export default function Home() {
             {sortedTutors.map((tutor, i) => (
               <Tr key={i}>
               <Td><Checkbox isChecked={tutor.Selected} 
-                            onChange={() => handleCheckboxChange(tutor.Name)} 
+                            onChange={() => handleCheckboxChange(tutor.name)} 
                             data-testid = 'lecturer-tutor-checkbox'/></Td>
-                <Td>{tutor.Name}</Td>
+                <Td>{tutor.name}</Td>
                 <Td>
-                  {tutor.Skills.split(',').map((skill: string, idx: number) => (
+                  {tutor.skills.split(',').map((skill: string, idx: number) => (
                     <div key={idx}>{skill.trim()}</div>
                   ))}
                 </Td>
-                <Td>{tutor.Creds}</Td>
+                <Td>{tutor.creds}</Td>
                 <Td>
-                  {tutor.Courses.split(',').map((course: string, idx: number) => (
+                  {tutor.courses.split(',').map((course: string, idx: number) => (
                     <div key={idx}>{course.trim()}</div>
                   ))}
                 </Td>
-                <Td>{tutor.Available}</Td>
+                <Td>{tutor.available}</Td>
               </Tr>
             ))}
           </Tbody>
@@ -223,18 +229,18 @@ export default function Home() {
                             ))}
                           </select>
                         </Td>
-                        <Td>{tutor.Name}</Td>
+                        <Td>{tutor.name}</Td>
                         <Td>
-                          {tutor.Skills.split(',').map((skill: string, idx: number) => (
+                          {tutor.skills.split(',').map((skill: string, idx: number) => (
                             <div key={idx}>{skill.trim()}</div>
                           ))}
                         </Td>
-                        <Td>{tutor.Creds}</Td>
-                        <Td>{tutor.Courses.split(',').map((course: string, idx: number) => (
+                        <Td>{tutor.creds}</Td>
+                        <Td>{tutor.courses.split(',').map((course: string, idx: number) => (
                           <div key={idx}>{course.trim()}</div>
                           ))}
                         </Td>
-                        <Td>{tutor.Available}</Td>
+                        <Td>{tutor.available}</Td>
                         <Td>
                           <textarea
                             value={comments[index] || ''}
@@ -259,7 +265,7 @@ export default function Home() {
               const updated = [...tutors];
 
               for (const tutor of selectedTutors) {
-                const index = tutors.findIndex(t => t.Name === tutor.Name);
+                const index = tutors.findIndex(t => t.name === tutor.name);
                 if (index !== -1) {
                   const updatedTutor = {
                     ...tutor,
@@ -271,13 +277,13 @@ export default function Home() {
                   updated[index] = updatedTutor;
 
                   try {
-                    await fetch(`http://your-api-domain.com/api/tutors/${updatedTutor.id}`, {
+                    await fetch(`http://localhost:5000/api/tutors/${updatedTutor.id}`, {
                       method: 'PUT',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify(updatedTutor)
                     });
                   } catch (error) {
-                    console.error(`Failed to update tutor ${updatedTutor.Name}:`, error);
+                    console.error(`Failed to update tutor ${updatedTutor.name}:`, error);
                   }
                 }
               }
@@ -309,7 +315,7 @@ export default function Home() {
               const maxSelected = Math.max(...tutors.map(t => t.TimesSelected || 0));
               const mostSelected = tutors.filter(t => (t.TimesSelected || 0) === maxSelected && maxSelected > 0);
               return mostSelected.length > 0 ? mostSelected.map((t, i) => (
-                <Text key={i}> {t.Name} ({t.TimesSelected} times)</Text>
+                <Text key={i}> {t.name} ({t.TimesSelected} times)</Text>
               )) : <Text>No data.</Text>;
             })()}
           </Box>
@@ -320,7 +326,7 @@ export default function Home() {
               const minSelected = Math.min(...filtered.map(t => t.TimesSelected || 0));
               const leastSelected = filtered.filter(t => (t.TimesSelected || 0) === minSelected);
               return leastSelected.length > 0 ? leastSelected.map((t, i) => (
-                <Text key={i}> {t.Name} ({t.TimesSelected} time{t.TimesSelected > 1 ? 's' : ''})</Text>
+                <Text key={i}> {t.name} ({t.TimesSelected} time{t.TimesSelected > 1 ? 's' : ''})</Text>
               )) : <Text>No data.</Text>;
             })()}
           </Box>
@@ -329,7 +335,7 @@ export default function Home() {
             {(() => {
               const neverSelected = tutors.filter(t => !t.TimesSelected);
               return neverSelected.length > 0 ? neverSelected.map((t, i) => (
-                <Text key={i}> {t.Name}</Text>
+                <Text key={i}> {t.name}</Text>
               )) : <Text>Everyone has been selected!</Text>;
             })()}
           </Box>

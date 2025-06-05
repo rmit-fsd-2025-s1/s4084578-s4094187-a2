@@ -3,11 +3,11 @@ import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
 
 const router = express.Router();
+const userRepo = AppDataSource.getRepository(User);
 
 router.post("/login", async(req, res) => {
   const { email, password } = req.body;
 
-  const userRepo = AppDataSource.getRepository(User);
   const user = await userRepo.findOneBy({ email });
 
   if (!user || user.password !== password) {
@@ -32,7 +32,6 @@ router.get("/profile", async (req, res) => {
   }
 
   try {
-    const userRepo = AppDataSource.getRepository(User);
     const user = await userRepo.findOneBy({ email: email as string });
 
     if (!user) {
@@ -49,13 +48,32 @@ router.get("/profile", async (req, res) => {
 
 router.get("/tutors", async (req, res) => {
   try {
-    const tutorRepo = AppDataSource.getRepository(User);
-    const tutors = await tutorRepo.find();
+    const tutors = await userRepo.find();
     res.json(tutors);
   } catch (error) {
     console.error("Error fetching tutors:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
+router.get("/search", async (req, res) => {
+  const { searchTerm } = req.query;
+
+  try {
+    const tutors = await userRepo
+      .createQueryBuilder('tutor')
+      .where('LOWER(tutor.name) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
+      .orWhere('LOWER(tutor.skills) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
+      .orWhere('LOWER(tutor.creds) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
+      .orWhere('LOWER(tutor.available) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
+      .orWhere('LOWER(tutor.courses) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
+      .getMany();
+
+    res.json(tutors);
+  } catch (error) {
+    console.error('Error fetching tutors:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+  });
 
 export default router;
