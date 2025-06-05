@@ -25,7 +25,7 @@ export default function Home() {
 
     const fetchTutors = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/tutors/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+        const response = await fetch(`http://localhost:5000/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
         setTutors(data);
       } catch (error) {
@@ -37,7 +37,7 @@ export default function Home() {
       fetchTutors();
     } else {
       // Fetch all tutors if no search term is provided
-      fetch('http://localhost:5000/api/tutors')
+      fetch('http://localhost:5000/api/search')
         .then(res => res.json())
         .then(data => {
           setTutors(data);
