@@ -47,4 +47,15 @@ router.get("/profile", async (req, res) => {
   }
 });
 
+router.get("/tutors", async (req, res) => {
+  try {
+    const tutorRepo = AppDataSource.getRepository(User);
+    const tutors = await tutorRepo.find();
+    res.json(tutors);
+  } catch (error) {
+    console.error("Error fetching tutors:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;

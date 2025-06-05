@@ -23,15 +23,14 @@ export default function Home() {
       setLecturerLoginExists(true)
     }
 
-    // Load from localStorage
-    const loadedTutors: any[] = [];
-    let index = 2;
-    let data;
-    while ((data = localStorage.getItem(`userInfo${index}`))) {
-      loadedTutors.push(JSON.parse(data));
-      index++;
-    }
-    setTutors(loadedTutors);
+    fetch('http://your-api-domain.com/api/tutors')
+      .then(res => res.json())
+      .then(data => {
+        setTutors(data);
+      })
+      .catch(error => {
+        console.error('Error fetching tutors:', error);
+      });
   }, []);
 
   //Message if not logged in
@@ -44,16 +43,23 @@ export default function Home() {
   }
 
   // Handle checkbox toggle
-  const handleCheckboxChange = (name: string) => {
+  const handleCheckboxChange = async (name: string) => {
     const updatedTutors = tutors.map(tutor =>
       tutor.Name === name ? { ...tutor, Selected: !tutor.Selected } : tutor
     );
     setTutors(updatedTutors);
-  
-    const index = tutors.findIndex(t => t.Name === name);
-    if (index !== -1) {
-      // Match the original key format
-      localStorage.setItem(`userInfo${index + 2}`, JSON.stringify(updatedTutors[index]));
+
+    const updatedTutor = updatedTutors.find(t => t.Name === name);
+    if (updatedTutor) {
+      try {
+        await fetch(`http://your-api-domain.com/api/tutors/${updatedTutor.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedTutor)
+        });
+      } catch (error) {
+        console.error('Error updating tutor:', error);
+      }
     }
   };
 
@@ -249,10 +255,10 @@ export default function Home() {
           <ModalFooter>
             {/*Submit button to submit rankings and update localStorage*/}
           <Button
-            onClick={() => {
+            onClick={async () => {
               const updated = [...tutors];
-              //Change correct userinfo
-              selectedTutors.forEach(tutor => {
+
+              for (const tutor of selectedTutors) {
                 const index = tutors.findIndex(t => t.Name === tutor.Name);
                 if (index !== -1) {
                   const updatedTutor = {
@@ -261,11 +267,21 @@ export default function Home() {
                     Selected: false,
                     TimesSelected: (tutor.TimesSelected || 0) + 1,
                   };
+
                   updated[index] = updatedTutor;
-                  localStorage.setItem(`userInfo${index + 2}`, JSON.stringify(updatedTutor)); // since keys start from userInfo2
+
+                  try {
+                    await fetch(`http://your-api-domain.com/api/tutors/${updatedTutor.id}`, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(updatedTutor)
+                    });
+                  } catch (error) {
+                    console.error(`Failed to update tutor ${updatedTutor.Name}:`, error);
+                  }
                 }
-              });
-              // Reset state
+              }
+
               setTutors(updated);
               setRankings({});
               setComments({});
