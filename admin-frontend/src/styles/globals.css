@@ -45,3 +45,8 @@
   padding: 5px;
   margin: 0px 10px;
 }
+
+.courseFormInputRow {
+  display: flex;
+  flex-direction: row;
+}
