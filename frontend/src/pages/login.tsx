@@ -4,17 +4,20 @@ import {
   FormErrorMessage,
   FormHelperText,
   Input,
-  useToast
+  useToast,
+  Button
 } from '@chakra-ui/react';
 import { useState} from "react";
 import Layout from "../components/Layout";
 import React from "react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [logEmail, setLogEmail] = useState("");
   const [logPassword, setLogPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const router = useRouter();
 
   //Determine parameters for valid inputs
   const invalidEmail = !logEmail.endsWith("@rmit.edu.au");
@@ -54,11 +57,26 @@ export default function Home() {
                 </FormErrorMessage>
               )}
           </FormControl>
-          {/*Details only compared onClick of login button*/}
-          <button onClick={handleSubmission} data-testid="login-button">Log In!</button><br/><br/>
-          <Link href="/signup" className="nav-link">
+
+          <Button
+            colorScheme="blue"
+            onClick={handleSubmission}
+            isLoading={isLoading}
+            data-testid="login-button"
+            mb={4}
+          >
+            Log In!
+          </Button>
+          <br/>
+          <Button
+            as="a"
+            href="/signup"
+            variant="link"
+            colorScheme="blue"
+            data-testid="signup-link"
+          >
             Don't have an account? Sign up here.
-          </Link>
+          </Button>
         </main>
       </div>
     </Layout>
@@ -82,6 +100,7 @@ export default function Home() {
   }
 
   async function checkLogin() {
+    setIsLoading(true);
     try {
       const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
@@ -95,6 +114,7 @@ export default function Home() {
       const user = await res.json();
 
       if (!res.ok) {
+        setIsLoading(false);
         toast({
           title: "Login failed",
           description: user.message || "Invalid credentials",
@@ -129,10 +149,11 @@ export default function Home() {
           localStorage.setItem("login", "tutor");
           //window.location.href = "/tutors";
         }
-        window.location.href = "/";
+        router.push("/");
       }, 3000); // wait 3 seconds for toast to show
     } catch (err) {
       console.error("Login failed:", err);
+      setIsLoading(false);
       toast({
         title: "Login error",
         description: "Something went wrong during login.",
