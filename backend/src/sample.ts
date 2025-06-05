@@ -5,7 +5,7 @@ const sampleUsers = [
       {
         //Admin Login Data, Registered as both lecturer and tutor for testing.
         email: "Admin@rmit.edu.au",
-        password: "password",
+        password: "wlCO5g06~2S(",
         lecturer: true,
         selected: false,
         name: "Admin",
@@ -19,7 +19,7 @@ const sampleUsers = [
       {
         //Lecturer Login Data
         email: "Lecturer@rmit.edu.au",
-        password: "password",
+        password: "]9u6X5K44rc$",
         lecturer: true,
         selected: false,
         name: "Lecturer",
@@ -32,7 +32,7 @@ const sampleUsers = [
       },
       {
         email: "JohnDoe@rmit.edu.au",
-        password: "password",
+        password: "aO!}4a442ks!",
         lecturer: false,
         selected: false,
         name: "John Doe",
@@ -45,7 +45,7 @@ const sampleUsers = [
       },
       {
         email: "LilySmith@rmit.edu.au",
-        password: "p455w0rd",
+        password: "712xY1Z`HKS2",
         lecturer: false,
         selected: false,
         name: "Lily Smith",
@@ -58,7 +58,7 @@ const sampleUsers = [
       },
       {
         email: "MaxPayne@rmit.edu.au",
-        password: "rockstar",
+        password: ".gU*=O0e@m17",
         lecturer: false,
         selected: false,
         name: "Max Payne",
@@ -71,7 +71,7 @@ const sampleUsers = [
       },
       {
         email: "RichardMiles@rmit.edu.au",
-        password: "carfan77",
+        password: "62FA0p>,63]r",
         lecturer: false,
         selected: false,
         name: "Richard Miles",
@@ -84,7 +84,7 @@ const sampleUsers = [
       },
       {
         email: "SteveJoes@rmit.edu.au",
-        password: "ApplesTasteGood",
+        password: "o6~£d1C4b6Mw",
         lecturer: false,
         selected: false,
         name: "Steve Joes",
@@ -97,7 +97,7 @@ const sampleUsers = [
       },
       {
         email: "BallGates@rmit.edu.au",
-        password: "Win10Forever",
+        password: "[8>3q'8q6PAs",
         lecturer: false,
         selected: false,
         name: "Ball Gates",
