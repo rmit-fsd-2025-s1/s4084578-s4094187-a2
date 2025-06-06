@@ -5,8 +5,8 @@ export const typeDefs = gql`
     id: ID!
     course_id: Int!
     name: String!
-    tutorApplications: [Tutor_Application!]!
-    lecturerCourses: [Lecturer_Course!]!
+    tutorApplications: [Tutor_Application!]
+    lecturerCourses: [Lecturer_Course!]
   }
 
   type Lecturer {
@@ -46,6 +46,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createCourse(course_id: Int!, name: String!): Course
+    createCourse(course_id: Int!, name: String!): Course!
+    updateCourse(id: Int!, course_id: Int, name: String): Course!
+    deleteCourse(id: Int!): Boolean!
   }
 `;
