@@ -22,7 +22,7 @@ export class Tutor {
     skills_list: string;
 
     @Column({ type: "varchar", length: 255})
-    credentials: string;
+    academic_credentials: string;
 
     @Column({ type: "tinyint"})
     blocked: boolean;

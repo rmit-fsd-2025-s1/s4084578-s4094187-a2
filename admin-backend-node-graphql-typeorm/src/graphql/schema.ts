@@ -5,6 +5,8 @@ export const typeDefs = gql`
     id: ID!
     course_id: Int!
     name: String!
+    tutorApplications: [Tutor_Application!]!
+    lecturerCourses: [Lecturer_Course!]!
   }
 
   type Lecturer {
@@ -23,6 +25,19 @@ export const typeDefs = gql`
     skills_list: String!
     academic_credentials: String!
     blocked: Boolean!
+  }
+  
+  type Tutor_Application {
+    tutor_application_id: ID!
+    tutor: Tutor!
+    course: Course!
+    selected: Boolean!
+  }
+
+  type Lecturer_Course {
+    lecturer_course_id: ID!
+    lecturer: Lecturer!
+    course: Course!
   }
 
   type Query { 

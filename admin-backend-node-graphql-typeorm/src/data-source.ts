@@ -3,6 +3,8 @@ import { DataSource } from "typeorm";
 import { Course } from "./entity/Course";
 import { Lecturer } from "./entity/Lecturer";
 import { Tutor } from "./entity/Tutor";
+import { Lecturer_Course } from "./entity/Lecturer_Course";
+import { Tutor_Application } from "./entity/Tutor_Application";
 
 
 export const AppDataSource = new DataSource({
@@ -17,7 +19,7 @@ export const AppDataSource = new DataSource({
   // but should be disabled in production to prevent accidental data loss.
   synchronize: true,
   logging: true,
-  entities: [Course, Lecturer, Tutor],
+  entities: [Course, Lecturer, Tutor, Lecturer_Course, Tutor_Application],
   migrations: [],
   subscribers: [],
 });
