@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Tutor } from "./entity/Tutor";
+import { User } from "./entity/User";
+import { Course } from "./entity/Course";
+import { Lecturer_Course } from "./entity/Lecturer_Course";
 import { Lecturer } from "./entity/Lecturer";
 import { Tutor_Application } from "./entity/Tutor_Application";
-import { Lecturer_Course } from "./entity/Lecturer_Course";
-import { Course } from "./entity/Course";
+import { Tutor } from "./entity/Tutor";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
