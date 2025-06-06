@@ -71,13 +71,13 @@ export default function Home() {
         <FormControl>
           <FormLabel fontWeight="bold">Create New Course</FormLabel>
           <div>
-            <FormLabel>Course Name</FormLabel>
+            <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
             <Input 
               placeholder='Course Name'
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
-            <FormLabel>Course ID</FormLabel>
+            <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
             <Input
               type="number"
               value={formData.course_id}
