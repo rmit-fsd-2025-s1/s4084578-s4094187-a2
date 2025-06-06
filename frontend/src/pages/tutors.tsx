@@ -6,6 +6,7 @@ import { TableContainer, Table, Thead, Tr, Th, Tbody, Td, Button, Box, Heading,
 
 interface Course {
   id: string;
+  course_id: number;
   name: string;
 }
 
@@ -17,15 +18,18 @@ interface Tutor {
   Courses: string;
 };
 
-// array of pre-populated courses
-const CoursesArray: Course[] = [
-  { id: "COSC0001", name: "Algorithms and Analysis" },
-  { id: "COSC0002", name: "Full Stack Development" },
-  { id: "COSC0003", name: "Introduction to Cyber Security" },
-  { id: "COSC0004", name: "Software Engineering Fundamentals" },
-];
 
 export default function Home() {
+
+  const [CoursesArray, setCoursesArray] = useState<Course[]>([])
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/courses")
+    .then((res) => res.json())
+    .then((data) => setCoursesArray(data))
+    .catch((err) => console.error("Failed to fetch courses:", err))
+  }, []);
+
   // useState for the currently logged in tutor
   const [currentTutor, setCurrentTutor] =useState<Tutor>({
     Name: "",
@@ -95,22 +99,6 @@ export default function Home() {
 
   //Handle the toggle button
   const handleApplyToggle = (courseName: string) => {
-    let courseList = formData.Courses ? formData.Courses.split(", ") : [];
-  
-    if (courseList.includes(courseName)) {
-      // Remove course
-      courseList = courseList.filter(c => c !== courseName);
-    } else {
-      // Add course
-      courseList.push(courseName);
-    }
-  
-    const updatedCourses = courseList.join(", ");
-    const updatedTutor = { ...formData, Courses: updatedCourses };
-  
-    setFormData(updatedTutor);
-    setCurrentTutor(updatedTutor);
-    localStorage.setItem("userInfo" + tutorKey, JSON.stringify(updatedTutor));
   };
 
   // function to process the form
@@ -147,7 +135,7 @@ export default function Home() {
             {/* currently maps all courses in the array, the local storage value is not used */}
             {CoursesArray.map((course) => (
               <Tr key={course.id}>
-                <Td>{course.id}</Td>
+                <Td>{course.course_id}</Td>
                 <Td>{course.name}</Td>
                 <Td>
                   <Button 
