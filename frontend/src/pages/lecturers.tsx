@@ -28,6 +28,7 @@ export default function Home() {
         const response = await fetch(`http://localhost:5000/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
         setTutors(data);
+        console.log('Fetched tutor data:', data);
       } catch (error) {
         console.error('Error fetching tutors:', error);
       }
