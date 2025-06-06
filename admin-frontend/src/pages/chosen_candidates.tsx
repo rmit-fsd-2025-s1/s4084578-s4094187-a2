@@ -1,7 +1,19 @@
+import { useEffect, useState } from "react";
+import { Course, courseService } from "@/services/api";
+
 export default function Home() {
+
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  useEffect(() => {
+    courseService.getCourses().then(setCourses);
+  }, []);
+
   return (
     <div>
-      This page will be used to generate a report containing a list of candidates chosen for each of the courses.
+      {courses.map((Course) => (
+        <p>{Course.course_id}: {Course.name}</p>
+      ))}
     </div>
-  );
+  )
 }

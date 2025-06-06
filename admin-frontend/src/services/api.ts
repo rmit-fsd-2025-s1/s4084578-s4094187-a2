@@ -2,6 +2,7 @@ import { client } from "./apollo-client";
 import { gql } from "@apollo/client";
 
 export interface Course {
+  id: number;
   course_id: number;
   name: string;
 }
@@ -9,6 +10,7 @@ export interface Course {
 const GET_COURSES = gql`
   query GetCourses {
     courses {
+      id
       course_id
       name
     }
