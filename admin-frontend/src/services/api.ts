@@ -1,5 +1,5 @@
-import { client } from "./apollo-client";
-import { gql } from "@apollo/client";
+import { client } from "./apollo-client"
+import { gql } from "@apollo/client"
 
 export interface Course {
   id: string;
@@ -25,7 +25,7 @@ const CREATE_COURSE = gql`
       name
     }
   }
-`;
+`
 
 const UPDATE_COURSE_MUTATION = gql`
   mutation UpdateCourse($id: ID!, $course_id: Int, $name: String) {
@@ -35,21 +35,31 @@ const UPDATE_COURSE_MUTATION = gql`
       name
     }
   }
-`;
+`
+
+const DELETE_COURSE = gql`
+  mutation DeleteCourse($id: ID!) {
+    deleteCourse(id: $id)
+  }
+`
 
 export const courseService = {
   getCourses: async (): Promise<Course[]> => {
-    const { data } = await client.query({ query: GET_COURSES, fetchPolicy: "network-only" });
-    return data.courses;
+    const { data } = await client.query({ query: GET_COURSES, fetchPolicy: "network-only" })
+    return data.courses
   },
 
   createCourse: async (course_id: number, name: string): Promise<Course> => {
-    const { data } = await client.mutate({ mutation: CREATE_COURSE, variables: { course_id, name } });
-    return data.createCourse;
+    const { data } = await client.mutate({ mutation: CREATE_COURSE, variables: { course_id, name } })
+    return data.createCourse
   },
 
   updateCourse: async (id: string, course_id: number, name: string): Promise<Course> => {
-    const { data } = await client.mutate({ mutation: UPDATE_COURSE_MUTATION, variables: { id, course_id, name } });
-    return data.updateCourse;
+    const { data } = await client.mutate({ mutation: UPDATE_COURSE_MUTATION, variables: { id, course_id, name } })
+    return data.updateCourse
+  },
+
+  deleteCourse: async (id: string): Promise<void> => {
+    await client.mutate({ mutation: DELETE_COURSE, variables: { id }})
   }
-};
+}

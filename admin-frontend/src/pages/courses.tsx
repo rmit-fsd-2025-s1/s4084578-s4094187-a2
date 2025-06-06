@@ -60,7 +60,16 @@ export default function Home() {
   };
 
   const handleDelete = async (course: Course) => {
-    alert(`deleting ${course.name}`)
+    const confirmed = window.confirm(`Are you sure you want to delete "${course.name}"?`);
+    if (!confirmed) return;
+    try {
+      await courseService.deleteCourse(course.id);
+      const updatedCourses = await courseService.getCourses();
+      setCourses(updatedCourses);
+    } 
+    catch (error) {
+      console.error("Error deleting course: ", error);
+    }
   }
 
   return (
