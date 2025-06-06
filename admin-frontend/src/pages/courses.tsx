@@ -13,6 +13,7 @@ export default function Home() {
   }, []);
 
   const [formData, setFormData] = useState<Course>({
+    id: -1,
     course_id: 0,
     name: ""
   });
@@ -34,7 +35,7 @@ export default function Home() {
       });
       const updatedCourses = await courseService.getCourses();
       setCourses(updatedCourses);
-      setFormData({ course_id: 0, name: "" });
+      setFormData({ id: -1, course_id: 0, name: "" });
     } 
     catch (error) {
       console.error("Error creating course:", error);
@@ -63,7 +64,7 @@ export default function Home() {
             </Tbody>
           </Table>
         </TableContainer>
-        {courses.length === 0 && <p>There are no courses in the database.</p>}
+        {courses.length === 0 && <p>Loading courses. If this is taking a long time, please refresh the page</p>}
       </div>
       <br/>
       <div className='courseForm'>
