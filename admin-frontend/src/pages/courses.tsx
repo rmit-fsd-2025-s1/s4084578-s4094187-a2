@@ -1,78 +1,61 @@
-import { 
+import {
   Box, Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalFooter, 
-  ModalHeader, ModalContent, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr 
+  ModalHeader, ModalContent, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Course, courseService, CREATE_COURSE, UPDATE_COURSE_MUTATION } from "@/services/api";
-import { useMutation } from "@apollo/client";
-
+import { Course, courseService } from "@/services/api";
 
 export default function Home() {
 
-  const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    courseService.getCourses().then(setCourses);
-  }, []);
-
+  const [courses, setCourses] = useState<Course[]>([])
   const [formData, setFormData] = useState<Course>({
     id: "-1",
     course_id: 0,
     name: ""
   });
 
-  console.log('CREATE_COURSE =', CREATE_COURSE);
-  const [createCourse, { loading }] = useMutation(CREATE_COURSE);
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+  const [editName, setEditName] = useState("")
+  const [editCourseId, setEditCourseId] = useState<number>(0);
+
+  useEffect(() => {
+    courseService.getCourses().then(setCourses)
+  }, []);
 
   const handleSubmit = async () => {
     if (!formData.name.trim() || formData.course_id <= 0) {
-      alert("Please enter a valid course name and course ID.");
-      return;
+      alert("Please enter a valid course name and ID.")
+      return
     }
     try {
-      await createCourse({
-        variables: {
-          course_id: formData.course_id,
-          name: formData.name,
-        },
-      });
-      const updatedCourses = await courseService.getCourses();
-      setCourses(updatedCourses);
-      setFormData({ id: "-1", course_id: 0, name: "" });
+      await courseService.createCourse(formData.course_id, formData.name);
+      const updatedCourses = await courseService.getCourses()
+      setCourses(updatedCourses)
+      setFormData({ id: "-1", course_id: 0, name: "" })
     } 
     catch (error) {
-      console.error("Error creating course:", error);
+      console.error("Error creating course:", error)
     }
   };
 
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [editName, setEditName] = useState('');
-  const [editCourseId, setEditCourseId] = useState<number>(0);
-  const [updateCourseMutation] = useMutation(UPDATE_COURSE_MUTATION);
-
   const handleEdit = (course: Course) => {
-    setSelectedCourse(course);
-    setEditName(course.name);
-    setEditCourseId(course.course_id);
-    setIsEditOpen(true);
+    setSelectedCourse(course)
+    setEditName(course.name)
+    setEditCourseId(course.course_id)
+    setIsEditOpen(true)
   };
 
   const handleSaveEdit = async () => {
-    if (!selectedCourse) return;
-
+    if (!selectedCourse) return
     try {
-      await updateCourseMutation({
-        variables: {
-          id: selectedCourse?.id,
-          name: editName,
-          course_id: Number(editCourseId),
-        },
-      });
-      setIsEditOpen(false);
-      courseService.getCourses().then(setCourses);
-    } catch (error) {
-      console.error("Error updating course:", error);
+      await courseService.updateCourse(selectedCourse.id, editCourseId, editName);
+      setIsEditOpen(false)
+      const updatedCourses = await courseService.getCourses()
+      setCourses(updatedCourses)
+    } 
+    catch (error) {
+      console.error("Error updating course: ", error)
     }
   };
 
@@ -85,35 +68,32 @@ export default function Home() {
       <Box p={4} borderWidth="1px" borderRadius="lg">
         <FormControl>
           <FormLabel fontWeight="bold">Add Course</FormLabel>
-          <div>
-            <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
-            <Input 
-              placeholder='Course Name'
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            />
-            <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
-            <Input
-              type="number"
-              value={formData.course_id}
-              onChange={(e) => setFormData({ ...formData, course_id: Number(e.target.value) })}
-            />
-          </div>
+          <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">Name</FormLabel>
+          <Input
+            placeholder="Course Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
+          <Input
+            type="number"
+            value={formData.course_id}
+            onChange={(e) => setFormData({ ...formData, course_id: Number(e.target.value) })}
+          />
         </FormControl>
         <br/>
-        <Button onClick={handleSubmit} isLoading={loading}>Create Course</Button>
+        <Button onClick={handleSubmit}>Create Course</Button>
       </Box>
 
       <br/>
       <Box p={4} borderWidth="1px" borderRadius="lg">
         <h1><strong>All Courses</strong></h1>
         <TableContainer>
-          <Table variant='simple'>
+          <Table variant="simple">
             <Thead>
               <Tr>
                 <Th>Name</Th>
                 <Th>ID</Th>
-                {/* blank headers for styling */}
                 <Th></Th>
                 <Th></Th>
               </Tr>
@@ -123,8 +103,8 @@ export default function Home() {
                 <Tr key={course.id}>
                   <Td>{course.name}</Td>
                   <Td>{course.course_id}</Td>
-                  <Td><Button className='editCourse' onClick={() => handleEdit(course)}>Edit</Button></Td>
-                  <Td><Button colorScheme="red" className='deleteCourse' onClick={() => handleDelete(course)}>Delete</Button></Td>
+                  <Td><Button onClick={() => handleEdit(course)}>Edit</Button></Td>
+                  <Td><Button colorScheme="red" onClick={() => handleDelete(course)}>Delete</Button></Td>
                 </Tr>
               ))}
             </Tbody>
@@ -141,8 +121,8 @@ export default function Home() {
           <ModalCloseButton/>
           <ModalBody>
             <FormControl mb={4}>
-              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">Name</FormLabel>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)}/>
             </FormControl>
             <FormControl>
               <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
@@ -155,7 +135,6 @@ export default function Home() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <br/>
     </>
   );
 }
