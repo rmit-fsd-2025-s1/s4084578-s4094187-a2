@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { User } from "./entity/User";
 import { Course } from "./entity/Course";
 import { Lecturer_Course } from "./entity/Lecturer_Course";
 import { Lecturer } from "./entity/Lecturer";

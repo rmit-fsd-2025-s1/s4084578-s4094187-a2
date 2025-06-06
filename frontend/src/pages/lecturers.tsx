@@ -130,20 +130,20 @@ export default function Home() {
             <Tr>
               {/*Clickable headers to sort table*/}
               <Th>Select</Th>
-              <Th onClick={() => handleSort('Name')} cursor="pointer">
-                Applicant {sortColumn === 'Name' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              <Th onClick={() => handleSort('name')} cursor="pointer">
+                Applicant {sortColumn === 'name' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
-              <Th onClick={() => handleSort('Skills')} cursor="pointer">
-                Skills {sortColumn === 'Skills' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              <Th onClick={() => handleSort('skillsList')} cursor="pointer">
+                Skills {sortColumn === 'skillsList' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
-              <Th onClick={() => handleSort('Creds')} cursor="pointer">
-                Credentials {sortColumn === 'Creds' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              <Th onClick={() => handleSort('academicCredentials')} cursor="pointer">
+                Credentials {sortColumn === 'academicCredentials' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
-              <Th onClick={() => handleSort('Courses')} cursor="pointer">
+              {/*<Th onClick={() => handleSort('Courses')} cursor="pointer">
                 Courses {sortColumn === 'Courses' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
-              </Th>
-              <Th onClick={() => handleSort('Available')} cursor="pointer">
-                Availability {sortColumn === 'Available' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              </Th>*/}
+              <Th onClick={() => handleSort('availableFullTime')} cursor="pointer">
+                Availability {sortColumn === 'availableFullTime' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
             </Tr>
           </Thead>
@@ -189,20 +189,20 @@ export default function Home() {
                   <Tr>
                     {/*Clickable headers to sort table*/}
                     <Th>Rank</Th>
-                    <Th onClick={() => handleSort('Name')} cursor="pointer">
-                      Applicant {sortColumn === 'Name' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+                    <Th onClick={() => handleSort('name')} cursor="pointer">
+                      Applicant {sortColumn === 'name' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
                     </Th>
-                    <Th onClick={() => handleSort('Skills')} cursor="pointer">
-                      Skills {sortColumn === 'Skills' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+                    <Th onClick={() => handleSort('skillsList')} cursor="pointer">
+                      Skills {sortColumn === 'skillsList' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
                     </Th>
-                    <Th onClick={() => handleSort('Creds')} cursor="pointer">
-                      Credentials {sortColumn === 'Creds' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+                    <Th onClick={() => handleSort('academicCredentials')} cursor="pointer">
+                      Credentials {sortColumn === 'academicCredentials' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
                     </Th>
-                    <Th onClick={() => handleSort('Courses')} cursor="pointer">
+                    {/*<Th onClick={() => handleSort('Courses')} cursor="pointer">
                       Courses {sortColumn === 'Courses' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
-                    </Th>
-                    <Th onClick={() => handleSort('Available')} cursor="pointer">
-                      Availability {sortColumn === 'Available' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+                    </Th>*/}
+                    <Th onClick={() => handleSort('availableFullTime')} cursor="pointer">
+                      Availability {sortColumn === 'availableFullTime' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
                     </Th>
                     <Th>Comments</Th>
                   </Tr>
