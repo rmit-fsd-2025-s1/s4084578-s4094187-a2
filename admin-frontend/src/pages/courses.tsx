@@ -83,63 +83,8 @@ export default function Home() {
   return (
     <>
       <Box p={4} borderWidth="1px" borderRadius="lg">
-        <h1><strong>All Courses</strong></h1>
-        <TableContainer>
-          <Table variant='simple'>
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>ID</Th>
-                {/* blank headers for styling */}
-                <Th></Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {courses.map((course) => (
-                <Tr key={course.id}>
-                  <Td>{course.name}</Td>
-                  <Td>{course.course_id}</Td>
-                  <Td><Button className='editCourse' onClick={() => handleEdit(course)}>Edit</Button></Td>
-                  <Td><Button className='deleteCourse' onClick={() => handleDelete(course)}>Delete</Button></Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-        {courses.length === 0 && <p>Loading courses. If this is taking more than a couple seconds, please refresh the page.</p>}
-      </Box>
-
-      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
-        <ModalOverlay/>
-        <ModalContent>
-          <ModalHeader>Edit Course</ModalHeader>
-          <ModalCloseButton/>
-          <ModalBody>
-            <FormControl mb={4}>
-              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
-              <Input
-                type="number"
-                value={editCourseId}
-                onChange={(e) => setEditCourseId(Number(e.target.value))}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => setIsEditOpen(false)} mr={3}>Cancel</Button>
-            <Button colorScheme="blue" onClick={handleSaveEdit}>Save</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      <br/>
-      <Box p={4} borderWidth="1px" borderRadius="lg">
         <FormControl>
-          <FormLabel fontWeight="bold">Create New Course</FormLabel>
+          <FormLabel fontWeight="bold">Add Course</FormLabel>
           <div>
             <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
             <Input 
@@ -158,6 +103,59 @@ export default function Home() {
         <br/>
         <Button onClick={handleSubmit} isLoading={loading}>Create Course</Button>
       </Box>
+
+      <br/>
+      <Box p={4} borderWidth="1px" borderRadius="lg">
+        <h1><strong>All Courses</strong></h1>
+        <TableContainer>
+          <Table variant='simple'>
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>ID</Th>
+                {/* blank headers for styling */}
+                <Th></Th>
+                <Th></Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {courses.map((course) => (
+                <Tr key={course.id}>
+                  <Td>{course.name}</Td>
+                  <Td>{course.course_id}</Td>
+                  <Td><Button className='editCourse' onClick={() => handleEdit(course)}>Edit</Button></Td>
+                  <Td><Button colorScheme="red" className='deleteCourse' onClick={() => handleDelete(course)}>Delete</Button></Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+        {courses.length === 0 && <p>Loading courses. If this is taking more than a couple seconds, please refresh the page.</p>}
+      </Box>
+      
+      {/* modal for edit button */}
+      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
+        <ModalOverlay/>
+        <ModalContent>
+          <ModalHeader>Edit Course</ModalHeader>
+          <ModalCloseButton/>
+          <ModalBody>
+            <FormControl mb={4}>
+              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
+              <Input type="number" value={editCourseId} onChange={(e) => setEditCourseId(Number(e.target.value))}/>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setIsEditOpen(false)} mr={3}>Cancel</Button>
+            <Button colorScheme="blue" onClick={handleSaveEdit}>Save</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <br/>
     </>
   );
 }
