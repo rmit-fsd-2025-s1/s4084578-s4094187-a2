@@ -57,16 +57,27 @@ router.get("/tutors", async (req, res) => {
 });
 
 router.get("/search", async (req, res) => {
-  const { searchTerm } = req.query;
+  let { searchTerm } = req.query;
 
+  
   try {
+    // If no searchTerm, return all tutors
+    if (!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim() === '') {
+      const allTutors = await userRepo.find();
+      res.json(allTutors);
+      return;
+    }
+
+    // Lowercase the searchTerm safely
+    searchTerm = searchTerm.toLowerCase();
+    
     const tutors = await userRepo
       .createQueryBuilder('tutor')
-      .where('LOWER(tutor.name) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
-      .orWhere('LOWER(tutor.skills) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
-      .orWhere('LOWER(tutor.creds) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
-      .orWhere('LOWER(tutor.available) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
-      .orWhere('LOWER(tutor.courses) LIKE :searchTerm', { searchTerm: `%${(searchTerm as string).toLowerCase()}%` })
+      .where('LOWER(tutor.name) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orWhere('LOWER(tutor.skills) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orWhere('LOWER(tutor.creds) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orWhere('LOWER(tutor.available) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
+      .orWhere('LOWER(tutor.courses) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
       .getMany();
 
     res.json(tutors);
