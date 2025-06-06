@@ -9,8 +9,8 @@ import Layout from '../components/Layout';
 export default function Home() {
   const [tutors, setTutors] = useState<any[]>([]); //Hold tutor data
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal control
-  const [rankings, setRankings] = useState<{ [index: number]: number }>({}); //Rankings for tutors
-  const [comments, setComments] = useState<{ [index: number]: string }>({}); //Comments for tutors
+  const [rankings, setRankings] = useState<{ [tutorId: number]: number }>({});
+  const [comments, setComments] = useState<{ [tutorId: number]: string }>({});
   const [sortColumn, setSortColumn] = useState<string | null>(null); //Choose which column to sort with
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); //Choose if sorting is ascending or descending
   const [searchTerm, setSearchTerm] = useState(''); //Search bar input
@@ -221,9 +221,9 @@ export default function Home() {
                       <Tr key={index}>
                          <Td>
                           <select
-                            value={rankings[index] || ''}
+                            value={rankings[tutor.id] || ''}
                             onChange={(e) =>
-                              setRankings({ ...rankings, [index]: parseInt(e.target.value) })
+                              setRankings({ ...rankings, [tutor.id]: parseInt(e.target.value) })
                             }
                           >
                             <option value="">Rank</option>
@@ -243,12 +243,14 @@ export default function Home() {
                           <div key={idx}>{course.trim()}</div>
                           ))}
                         </Td>*/}
-                        <Td>{tutor.availableFullTime}</Td>
+                        <Td>
+                          {tutor.availableFullTime ? "Full-time" : "Part-time"}
+                        </Td>
                         <Td>
                           <textarea
-                            value={comments[index] || ''}
+                            value={comments[tutor.id] || ''}
                             onChange={(e) =>
-                              setComments({ ...comments, [index]: e.target.value })
+                              setComments({ ...comments, [tutor.id]: e.target.value })
                             }
                             rows={2}
                             style={{ width: '100%' }}
@@ -268,11 +270,11 @@ export default function Home() {
               const updated = [...tutors];
 
               for (const tutor of selectedTutors) {
-                const index = tutors.findIndex(t => t.name === tutor.name);
+                const index = tutors.findIndex(t => t.id === tutor.id);
                 if (index !== -1) {
                   const updatedTutor = {
                     ...tutor,
-                    Comment: comments[index] || '',
+                    Comment: comments[tutor.id] || '',
                     Selected: false,
                     TimesSelected: (tutor.TimesSelected || 0) + 1,
                   };
@@ -280,10 +282,11 @@ export default function Home() {
                   updated[index] = updatedTutor;
 
                   try {
+                    console.log('Sending updated tutor:', updatedTutor);
                     await fetch(`http://localhost:5000/api/tutors/${updatedTutor.id}`, {
                       method: 'PUT',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(updatedTutor)
+                      body: JSON.stringify(updatedTutor),
                     });
                   } catch (error) {
                     console.error(`Failed to update tutor ${updatedTutor.name}:`, error);
@@ -315,28 +318,28 @@ export default function Home() {
           <Box p={4} borderWidth="1px" borderRadius="lg">
             <Text fontWeight="bold" mb={2}>Most Selected</Text>
             {(() => {
-              const maxSelected = Math.max(...tutors.map(t => t.TimesSelected || 0));
-              const mostSelected = tutors.filter(t => (t.TimesSelected || 0) === maxSelected && maxSelected > 0);
+              const maxSelected = Math.max(...tutors.map(t => t.timesSelected || 0));
+              const mostSelected = tutors.filter(t => (t.timesSelected || 0) === maxSelected && maxSelected > 0);
               return mostSelected.length > 0 ? mostSelected.map((t, i) => (
-                <Text key={i}> {t.name} ({t.TimesSelected} times)</Text>
+                <Text key={i}> {t.name} ({t.timesSelected} times)</Text>
               )) : <Text>No data.</Text>;
             })()}
           </Box>
           <Box p={4} borderWidth="1px" borderRadius="lg">
             <Text fontWeight="bold" mb={2}>Least Selected (but at least once)</Text>
             {(() => {
-              const filtered = tutors.filter(t => t.TimesSelected && t.TimesSelected > 0);
-              const minSelected = Math.min(...filtered.map(t => t.TimesSelected || 0));
-              const leastSelected = filtered.filter(t => (t.TimesSelected || 0) === minSelected);
+              const filtered = tutors.filter(t => t.timesSelected && t.timesSelected > 0);
+              const minSelected = Math.min(...filtered.map(t => t.timesSelected || 0));
+              const leastSelected = filtered.filter(t => (t.timesSelected || 0) === minSelected);
               return leastSelected.length > 0 ? leastSelected.map((t, i) => (
-                <Text key={i}> {t.name} ({t.TimesSelected} time{t.TimesSelected > 1 ? 's' : ''})</Text>
+                <Text key={i}> {t.name} ({t.timesSelected} time{t.timesSelected > 1 ? 's' : ''})</Text>
               )) : <Text>No data.</Text>;
             })()}
           </Box>
           <Box p={4} borderWidth="1px" borderRadius="lg">
             <Text fontWeight="bold" mb={2}>Never Selected</Text>
             {(() => {
-              const neverSelected = tutors.filter(t => !t.TimesSelected);
+              const neverSelected = tutors.filter(t => !t.timesSelected);
               return neverSelected.length > 0 ? neverSelected.map((t, i) => (
                 <Text key={i}> {t.name}</Text>
               )) : <Text>Everyone has been selected!</Text>;

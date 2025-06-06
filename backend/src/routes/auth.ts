@@ -110,4 +110,27 @@ router.get("/search", async (req, res) => {
   }
   });
 
+router.put('/tutors/:id', async (req, res) => {
+  const tutorId = parseInt(req.params.id);
+  const { Comment, TimesSelected } = req.body;
+
+  try {
+    const tutor = await tutorRepo.findOneBy({ id: tutorId });
+    if (!tutor) {
+      res.status(404).json({ message: 'Tutor not found' });
+      return;
+    }
+
+    // Update fields
+    if (Comment !== undefined) tutor.comments = Comment;
+    if (TimesSelected !== undefined) tutor.timesSelected = TimesSelected;
+
+    const savedTutor = await tutorRepo.save(tutor);
+    res.json(savedTutor);
+  } catch (error) {
+    console.error('Failed to update tutor:', error);
+    res.status(500).json({ message: 'Error updating tutor' });
+  }
+});
+
 export default router;

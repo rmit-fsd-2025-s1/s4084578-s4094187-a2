@@ -24,11 +24,14 @@ export class Tutor {
     @Column({ type: "varchar", length: 255})
     academicCredentials: string;
 
-    @Column({type: "int"})
+    @Column({type: "int", default: 0})
     timesSelected: number;
 
     @Column({ type: "tinyint"})
     blocked: boolean;
+
+    @Column({ nullable: true, type: "varchar", length: 255})
+    comments: string;
 
     @OneToMany(() => Tutor_Application, tutorApplication => tutorApplication.tutor)
     tutorApplications: Tutor_Application[];
