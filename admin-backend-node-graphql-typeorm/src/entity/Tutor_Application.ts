@@ -6,7 +6,7 @@ import { Course } from "./Course";
 @Unique(["tutor", "course"])
 export class Tutor_Application {
     @PrimaryGeneratedColumn({type: "int"})
-    tutor_application_id: number;
+    tutor_application_id: string;
 
     @Column({ type: "tinyint"})
     selected: boolean;

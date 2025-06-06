@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from "graphql-tag"
 
 export const typeDefs = gql`
   type Course {
@@ -41,7 +41,6 @@ export const typeDefs = gql`
   }
 
   type Query { 
-    hello: String!
     courses: [Course!]!
   }
 
@@ -50,4 +49,4 @@ export const typeDefs = gql`
     updateCourse(id: ID!, course_id: Int, name: String): Course!
     deleteCourse(id: ID!): Boolean!
   }
-`;
+`
