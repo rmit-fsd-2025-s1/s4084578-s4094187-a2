@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Course, courseService, CREATE_COURSE } from "@/services/api";
 import { useMutation } from "@apollo/client";
@@ -44,8 +44,8 @@ export default function Home() {
 
   return (
     <>
-      <div>
-        <h1>Courses</h1>
+      <Box p={4} borderWidth="1px" borderRadius="lg">
+        <h1><strong>All Courses</strong></h1>
         <TableContainer>
           <Table variant='simple'>
             <Thead>
@@ -64,18 +64,20 @@ export default function Home() {
             </Tbody>
           </Table>
         </TableContainer>
-        {courses.length === 0 && <p>Loading courses. If this is taking a long time, please refresh the page</p>}
-      </div>
+        {courses.length === 0 && <p>Loading courses. If this is taking a long time, please refresh the page.</p>}
+      </Box>
       <br/>
-      <div className='courseForm'>
+      <Box p={4} borderWidth="1px" borderRadius="lg">
         <FormControl>
-          <FormLabel>Create New Course</FormLabel>
-          <div className='courseFormInputRow'>
+          <FormLabel fontWeight="bold">Create New Course</FormLabel>
+          <div>
+            <FormLabel>Course Name</FormLabel>
             <Input 
               placeholder='Course Name'
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
+            <FormLabel>Course ID</FormLabel>
             <Input
               type="number"
               value={formData.course_id}
@@ -83,9 +85,9 @@ export default function Home() {
             />
           </div>
         </FormControl>
+        <br/>
         <Button onClick={handleSubmit} isLoading={loading}>Create Course</Button>
-      </div>
-
+      </Box>
     </>
   );
 }
