@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Tutor_Application } from "./Tutor_Application"
 
 @Entity()
 export class Tutor {
@@ -26,4 +26,7 @@ export class Tutor {
 
     @Column({ type: "tinyint"})
     blocked: boolean;
+
+    @OneToMany(() => Tutor_Application, tutorApplication => tutorApplication.tutor)
+    tutorApplications: Tutor_Application[];
 }
