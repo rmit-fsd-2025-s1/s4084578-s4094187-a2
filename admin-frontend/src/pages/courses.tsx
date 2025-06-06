@@ -64,7 +64,7 @@ export default function Home() {
             </Tbody>
           </Table>
         </TableContainer>
-        {courses.length === 0 && <p>Loading courses. If this is taking a long time, please refresh the page.</p>}
+        {courses.length === 0 && <p>Loading courses. If this is taking more than a couple seconds, please refresh the page.</p>}
       </Box>
       <br/>
       <Box p={4} borderWidth="1px" borderRadius="lg">
