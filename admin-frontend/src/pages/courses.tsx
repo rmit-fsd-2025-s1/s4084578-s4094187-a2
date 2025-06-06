@@ -1,6 +1,9 @@
-import { Box, Button, FormControl, FormLabel, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { 
+  Box, Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalFooter, 
+  ModalHeader, ModalContent, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr 
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Course, courseService, CREATE_COURSE } from "@/services/api";
+import { Course, courseService, CREATE_COURSE, UPDATE_COURSE_MUTATION } from "@/services/api";
 import { useMutation } from "@apollo/client";
 
 
@@ -13,7 +16,7 @@ export default function Home() {
   }, []);
 
   const [formData, setFormData] = useState<Course>({
-    id: -1,
+    id: "-1",
     course_id: 0,
     name: ""
   });
@@ -35,19 +38,46 @@ export default function Home() {
       });
       const updatedCourses = await courseService.getCourses();
       setCourses(updatedCourses);
-      setFormData({ id: -1, course_id: 0, name: "" });
+      setFormData({ id: "-1", course_id: 0, name: "" });
     } 
     catch (error) {
       console.error("Error creating course:", error);
     }
   };
 
-  const handleEdit = async (Course: Course) => {
-    alert(`editing ${Course.name}`)
-  }
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editCourseId, setEditCourseId] = useState<number>(0);
+  const [updateCourseMutation] = useMutation(UPDATE_COURSE_MUTATION);
 
-  const handleDelete = async (Course: Course) => {
-    alert(`deleting ${Course.name}`)
+  const handleEdit = (course: Course) => {
+    setSelectedCourse(course);
+    setEditName(course.name);
+    setEditCourseId(course.course_id);
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedCourse) return;
+
+    try {
+      await updateCourseMutation({
+        variables: {
+          id: selectedCourse?.id,
+          name: editName,
+          course_id: Number(editCourseId),
+        },
+      });
+      setIsEditOpen(false);
+      courseService.getCourses().then(setCourses);
+    } catch (error) {
+      console.error("Error updating course:", error);
+    }
+  };
+
+  const handleDelete = async (course: Course) => {
+    alert(`deleting ${course.name}`)
   }
 
   return (
@@ -66,12 +96,12 @@ export default function Home() {
               </Tr>
             </Thead>
             <Tbody>
-              {courses.map((Course) => (
-                <Tr>
-                  <Td>{Course.name}</Td>
-                  <Td>{Course.course_id}</Td>
-                  <Td><Button className='editCourse' onClick={() => handleEdit(Course)}>Edit</Button></Td>
-                  <Td><Button className='deleteCourse' onClick={() => handleDelete(Course)}>Delete</Button></Td>
+              {courses.map((course) => (
+                <Tr key={course.id}>
+                  <Td>{course.name}</Td>
+                  <Td>{course.course_id}</Td>
+                  <Td><Button className='editCourse' onClick={() => handleEdit(course)}>Edit</Button></Td>
+                  <Td><Button className='deleteCourse' onClick={() => handleDelete(course)}>Delete</Button></Td>
                 </Tr>
               ))}
             </Tbody>
@@ -79,6 +109,33 @@ export default function Home() {
         </TableContainer>
         {courses.length === 0 && <p>Loading courses. If this is taking more than a couple seconds, please refresh the page.</p>}
       </Box>
+
+      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
+        <ModalOverlay/>
+        <ModalContent>
+          <ModalHeader>Edit Course</ModalHeader>
+          <ModalCloseButton/>
+          <ModalBody>
+            <FormControl mb={4}>
+              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600" >Name</FormLabel>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
+              <Input
+                type="number"
+                value={editCourseId}
+                onChange={(e) => setEditCourseId(Number(e.target.value))}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => setIsEditOpen(false)} mr={3}>Cancel</Button>
+            <Button colorScheme="blue" onClick={handleSaveEdit}>Save</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <br/>
       <Box p={4} borderWidth="1px" borderRadius="lg">
         <FormControl>
