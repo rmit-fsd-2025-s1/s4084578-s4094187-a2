@@ -42,6 +42,14 @@ export default function Home() {
     }
   };
 
+  const handleEdit = async (Course: Course) => {
+    alert(`editing ${Course.name}`)
+  }
+
+  const handleDelete = async (Course: Course) => {
+    alert(`deleting ${Course.name}`)
+  }
+
   return (
     <>
       <Box p={4} borderWidth="1px" borderRadius="lg">
@@ -52,6 +60,9 @@ export default function Home() {
               <Tr>
                 <Th>Name</Th>
                 <Th>ID</Th>
+                {/* blank headers for styling */}
+                <Th></Th>
+                <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -59,6 +70,8 @@ export default function Home() {
                 <Tr>
                   <Td>{Course.name}</Td>
                   <Td>{Course.course_id}</Td>
+                  <Td><Button className='editCourse' onClick={() => handleEdit(Course)}>Edit</Button></Td>
+                  <Td><Button className='deleteCourse' onClick={() => handleDelete(Course)}>Delete</Button></Td>
                 </Tr>
               ))}
             </Tbody>
