@@ -1,121 +1,113 @@
 import { AppDataSource } from './data-source';
-import { User } from './entity/User';
+import { Tutor } from "./entity/Tutor";
+import { Lecturer } from "./entity/Lecturer";
 
-const sampleUsers = [
+const sampleLecturers = [
       {
         //Admin Login Data, Registered as both lecturer and tutor for testing.
         email: "Admin@rmit.edu.au",
         password: "wlCO5g06~2S(",
-        lecturer: true,
-        selected: false,
         name: "Admin",
-        skills: "All",
-        creds: "All",
-        courses: "All",
-        available: "Full Time",
-        timesSelected: 0,
-        blocked: false
+        lecturerCourses: []
       },
       {
         //Lecturer Login Data
         email: "Lecturer@rmit.edu.au",
         password: "]9u6X5K44rc$",
-        lecturer: true,
-        selected: false,
         name: "Lecturer",
-        skills: "All",
-        creds: "All",
-        courses: "All",
-        available: "Full Time",
-        timesSelected: 0,
-        blocked: false
-      },
+        lecturerCourses: []
+      }
+    ];
+
+const sampleTutors = [
       {
         email: "JohnDoe@rmit.edu.au",
         password: "aO!}4a442ks!",
-        lecturer: false,
-        selected: false,
         name: "John Doe",
-        skills: "Time Management, Research",
-        creds: "Bachelor of Computer Science",
+        skillsList: "Time Management, Research",
+        academicCredentials: "Bachelor of Computer Science",
         courses: "Software Engineering Fundamentals, Introduction to Cyber Security",
-        available: "Part Time",
+        availableFullTime: false,
         timesSelected: 0,
-        blocked: false
+        blocked: false,
+        tutorApplications: []
       },
       {
         email: "LilySmith@rmit.edu.au",
         password: "712xY1Z`HKS2",
-        lecturer: false,
-        selected: false,
         name: "Lily Smith",
-        skills: "Computer Skills, Critical Thinking",
-        creds: "Bachelor of Software Engineering",
+        skillsList: "Computer Skills, Critical Thinking",
+        academicCredentials: "Bachelor of Software Engineering",
         courses: "Algorithms and Analysis, Full Stack Development",
-        available: "Part Time",
+        availableFullTime: false,
         timesSelected: 2,
-        blocked: false
+        blocked: false,
+        tutorApplications: []
       },
       {
         email: "MaxPayne@rmit.edu.au",
         password: ".gU*=O0e@m17",
-        lecturer: false,
-        selected: false,
         name: "Max Payne",
-        skills: "Problem Solving, Independence",
-        creds: "Bachelor of IT",
+        skillsList: "Problem Solving, Independence",
+        academicCredentials: "Bachelor of IT",
         courses: "Full Stack Development, Software Engineering Fundamentals",
-        available: "Full Time",
+        availableFullTime: true,
         timesSelected: 3,
-        blocked: false
+        blocked: false,
+        tutorApplications: []
       },
       {
         email: "RichardMiles@rmit.edu.au",
         password: "62FA0p>,63]r",
-        lecturer: false,
-        selected: false,
         name: "Richard Miles",
-        skills: "Research, Critical Thinking",
-        creds: "Bachelor of Software Engineering",
+        skillsList: "Research, Critical Thinking",
+        academicCredentials: "Bachelor of Software Engineering",
         courses: "Full Stack Development, Algorithms and Analysis",
-        available: "Full Time",
+        availableFullTime: true,
         timesSelected: 2,
-        blocked: false
+        blocked: false,
+        tutorApplications: []
       },
       {
         email: "SteveJoes@rmit.edu.au",
         password: "o6~£d1C4b6Mw",
-        lecturer: false,
-        selected: false,
         name: "Steve Joes",
-        skills: "Computer Skills, Independence",
-        creds: "Bachelor of Computer Science",
+        skillsList: "Computer Skills, Independence",
+        academicCredentials: "Bachelor of Computer Science",
         courses: "Software Engineering Fundamentals, Algorithms and Analysis",
-        available: "Part Time",
+        availableFullTime: false,
         timesSelected: 5,
-        blocked: false
+        blocked: false,
+        tutorApplications: []
       },
       {
         email: "BallGates@rmit.edu.au",
         password: "[8>3q'8q6PAs",
-        lecturer: false,
-        selected: false,
         name: "Ball Gates",
-        skills: "Problem Solving, Time Management",
-        creds: "Bachelor of IT",
+        skillsList: "Problem Solving, Time Management",
+        academicCredentials: "Bachelor of IT",
         courses: "Software Engineering Fundamentals, Introduction to Cyber Security",
-        available: "Part Time",
+        availableFullTime: false,
         timesSelected: 4,
-        blocked: false
+        blocked: false,
+        tutorApplications: []
       }
     ];
 
 AppDataSource.initialize().then(async () => {
-  const userRepository = AppDataSource.getRepository(User);
+  const tutorRepo = AppDataSource.getRepository(Tutor);
+  const lecturerRepo = AppDataSource.getRepository(Lecturer);
 
-  for (const user of sampleUsers) {
-    const newUser = userRepository.create(user);
-    await userRepository.save(newUser);
+  // Insert tutors
+  for (const tutor of sampleTutors) {
+    const newTutor = tutorRepo.create(tutor);
+    await tutorRepo.save(newTutor);
+  }
+
+  // Insert lecturers
+  for (const lecturer of sampleLecturers) {
+    const newLecturer = lecturerRepo.create(lecturer);
+    await lecturerRepo.save(newLecturer);
   }
 
   console.log("Sample users inserted.");

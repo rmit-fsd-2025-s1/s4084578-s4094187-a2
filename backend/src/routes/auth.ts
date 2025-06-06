@@ -1,26 +1,34 @@
 import express from "express";
 import { AppDataSource } from "../data-source";
-import { User } from "../entity/User";
+import { Tutor } from "../entity/Tutor";
+import { Lecturer } from "../entity/Lecturer";
 
 const router = express.Router();
-const userRepo = AppDataSource.getRepository(User);
+const tutorRepo = AppDataSource.getRepository(Tutor);
+const lecturerRepo = AppDataSource.getRepository(Lecturer);
 
 router.post("/login", async(req, res) => {
   const { email, password } = req.body;
 
-  const user = await userRepo.findOneBy({ email });
+  const lecturer = await lecturerRepo.findOneBy({ email: email as string });
 
-  if (!user || user.password !== password) {
-    res.status(401).json({ message: "Invalid credentials" });
-    return;
-  }
+    if (!lecturer) {
+      const tutor = await tutorRepo.findOneBy({ email: email as string });
+      if (!tutor) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+      res.json(tutor);
+      return;
+    }
 
-    res.json({
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    lecturer: user.lecturer,
-  });
+    res.json(lecturer);
+
+    /*res.json({
+      id: user.id,
+      email: user.email,
+      name: user.name
+  });*/
 });
 
 router.get("/profile", async (req, res) => {
@@ -32,14 +40,19 @@ router.get("/profile", async (req, res) => {
   }
 
   try {
-    const user = await userRepo.findOneBy({ email: email as string });
+    const lecturer = await lecturerRepo.findOneBy({ email: email as string });
 
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
+    if (!lecturer) {
+      const tutor = await tutorRepo.findOneBy({ email: email as string });
+      if (!tutor) {
+        res.status(404).json({ message: "User not found" });
+        return;
+      }
+      res.json(tutor);
       return;
     }
 
-    res.json(user);
+    res.json(lecturer);
   } catch (err) {
     console.error("Error fetching profile:", err);
     res.status(500).json({ message: "Internal server error" });
@@ -48,10 +61,20 @@ router.get("/profile", async (req, res) => {
 
 router.get("/tutors", async (req, res) => {
   try {
-    const tutors = await userRepo.find();
+    const tutors = await tutorRepo.find();
     res.json(tutors);
   } catch (error) {
     console.error("Error fetching tutors:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/lecturers", async (req, res) => {
+  try {
+    const lecturers = await lecturerRepo.find();
+    res.json(lecturers);
+  } catch (error) {
+    console.error("Error fetching lecturers:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -63,7 +86,7 @@ router.get("/search", async (req, res) => {
   try {
     // If no searchTerm, return all tutors
     if (!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim() === '') {
-      const allTutors = await userRepo.find();
+      const allTutors = await tutorRepo.find();
       res.json(allTutors);
       return;
     }
@@ -71,7 +94,7 @@ router.get("/search", async (req, res) => {
     // Lowercase the searchTerm safely
     searchTerm = searchTerm.toLowerCase();
     
-    const tutors = await userRepo
+    const tutors = await tutorRepo
       .createQueryBuilder('tutor')
       .where('LOWER(tutor.name) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
       .orWhere('LOWER(tutor.skills) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })

@@ -4,7 +4,7 @@ import { Lecturer_Course } from "./Lecturer_Course";
 @Entity()
 export class Lecturer {
     @PrimaryGeneratedColumn({ type: "int"})
-    id: string;
+    id: number;
 
     @Column({ type: "varchar", length: 255})
     email: string;

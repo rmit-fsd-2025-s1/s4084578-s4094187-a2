@@ -4,7 +4,7 @@ import { Tutor_Application } from "./Tutor_Application"
 @Entity()
 export class Tutor {
     @PrimaryGeneratedColumn({ type: "int"})
-    id: string;
+    id: number;
 
     @Column({ type: "varchar", length: 255})
     email: string;
@@ -16,13 +16,16 @@ export class Tutor {
     name: string;
 
     @Column({ type: "tinyint"})
-    available_full_time: boolean;
+    availableFullTime: boolean;
 
     @Column({ type: "varchar", length: 255})
-    skills_list: string;
+    skillsList: string;
 
     @Column({ type: "varchar", length: 255})
-    academic_credentials: string;
+    academicCredentials: string;
+
+    @Column({type: "int"})
+    timesSelected: number;
 
     @Column({ type: "tinyint"})
     blocked: boolean;

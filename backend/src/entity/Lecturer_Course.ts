@@ -6,7 +6,7 @@ import { Course } from "./Course";
 @Unique(["lecturer", "course"])
 export class Lecturer_Course {
     @PrimaryGeneratedColumn({type: "int"})
-    lecturer_course_id: string;
+    lecturer_course_id: number;
 
     @ManyToOne(() => Lecturer, lecturer => lecturer.lecturerCourses, { onDelete: "CASCADE" })
     lecturer: Lecturer;

@@ -156,17 +156,19 @@ export default function Home() {
                             data-testid = 'lecturer-tutor-checkbox'/></Td>
                 <Td>{tutor.name}</Td>
                 <Td>
-                  {tutor.skills.split(',').map((skill: string, idx: number) => (
+                  {tutor.skillsList.split(',').map((skill: string, idx: number) => (
                     <div key={idx}>{skill.trim()}</div>
                   ))}
                 </Td>
-                <Td>{tutor.creds}</Td>
-                <Td>
+                <Td>{tutor.academicCredentials}</Td>
+                {/*<Td>
                   {tutor.courses.split(',').map((course: string, idx: number) => (
                     <div key={idx}>{course.trim()}</div>
                   ))}
+                </Td>*/}
+                <Td>
+                  {tutor.availableFullTime ? "Full-time" : "Part-time"}
                 </Td>
-                <Td>{tutor.available}</Td>
               </Tr>
             ))}
           </Tbody>
@@ -232,16 +234,16 @@ export default function Home() {
                         </Td>
                         <Td>{tutor.name}</Td>
                         <Td>
-                          {tutor.skills.split(',').map((skill: string, idx: number) => (
+                          {tutor.skillsList.split(',').map((skill: string, idx: number) => (
                             <div key={idx}>{skill.trim()}</div>
                           ))}
                         </Td>
-                        <Td>{tutor.creds}</Td>
-                        <Td>{tutor.courses.split(',').map((course: string, idx: number) => (
+                        <Td>{tutor.academicCredentials}</Td>
+                        {/*<Td>{tutor.courses.split(',').map((course: string, idx: number) => (
                           <div key={idx}>{course.trim()}</div>
                           ))}
-                        </Td>
-                        <Td>{tutor.available}</Td>
+                        </Td>*/}
+                        <Td>{tutor.availableFullTime}</Td>
                         <Td>
                           <textarea
                             value={comments[index] || ''}
