@@ -4,17 +4,34 @@ import { Lecturer } from "./entity/Lecturer";
 
 const sampleLecturers = [
       {
-        //Admin Login Data, Registered as both lecturer and tutor for testing.
+        //Admin Login Data
         email: "Admin@rmit.edu.au",
         password: "wlCO5g06~2S(",
         name: "Admin",
         lecturerCourses: []
       },
       {
-        //Lecturer Login Data
-        email: "Lecturer@rmit.edu.au",
+        email: "AustinCordova@rmit.edu.au",
         password: "]9u6X5K44rc$",
-        name: "Lecturer",
+        name: "Austin Cordova",
+        lecturerCourses: []
+      },
+      {
+        email: "MayMullen@rmit.edu.au",
+        password: "1+83Wk[QQ}0a",
+        name: "May Mullen",
+        lecturerCourses: []
+      },
+      {
+        email: "AllenSantos@rmit.edu.au",
+        password: "JweJ<},uC859",
+        name: "Allen Santos",
+        lecturerCourses: []
+      },
+      {
+        email: "GabrielWalters@rmit.edu.au",
+        password: "-))rKdS59f4]",
+        name: "Gabriel Walters",
         lecturerCourses: []
       }
     ];
