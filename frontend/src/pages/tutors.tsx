@@ -52,9 +52,15 @@ export default function Home() {
     // checking that there is a logged in tutor when page loads
     const tutorLoginCheck = localStorage.getItem("login");
     const userEmail = localStorage.getItem("account")
+
+    // handle missing email
+    if (!userEmail) {
+      console.error("No email found in localStorage");
+      return;
+    }
     if (tutorLoginCheck === "tutor" || tutorLoginCheck === "admin") {
       setTutorLoginExists(true)
-      fetch(`http://localhost:5050/api/tutors/profile?email=${userEmail}`)
+      fetch(`http://localhost:5050/api/tutors/${encodeURIComponent(userEmail)}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch tutor profile");
@@ -65,7 +71,7 @@ export default function Home() {
         console.log("Fetched tutor data:", tutorData)
         setCurrentTutor({
           Name: tutorData.name || "",
-          Available: tutorData.availableFullTime === true ? "Full Time" : "Part Time",
+          Available: tutorData.availableFullTime ? "Full Time" : "Part Time",
           Skills: tutorData.skillsList || "",
           Creds: tutorData.academicCredentials || "",
         });
