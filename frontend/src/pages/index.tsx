@@ -5,20 +5,19 @@ import { useEffect, useState } from 'react';
 export default function Home() {
   const [LoginExists, setLoginExists] = useState(false); //Check if user is logged in
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   type UserProfile = {
     id: number;
     email: string;
-    name: string;
     password: string;
-    lecturer: boolean;
-    selected: boolean;
-    skills: string;
-    creds: string;
-    courses: string;
-    available: string;
+    name: string;
+    availableFullTime: boolean;
+    skillsList: string;
+    academicCredentials: string;
     timesSelected: number;
     blocked: boolean;
+    comments: string;
     joinDate: Date;
   };
 
@@ -28,6 +27,7 @@ export default function Home() {
 
     if (login && email) {
       setLoginExists(true);
+      setRole(login);
       fetch(`http://localhost:5050/api/profile?email=${email}`)
         .then(res => res.json())
         .then(data => setProfile(data))
@@ -76,13 +76,16 @@ export default function Home() {
           <>
             <p><strong>Name:</strong> {profile.name}</p>
             <p><strong>Email:</strong> {profile.email}</p>
-            <p><strong>Role:</strong> {profile.lecturer ? "Lecturer" : "Tutor"}</p>
-            <p><strong>Skills:</strong> {profile.skills}</p>
-            <p><strong>Credentials:</strong> {profile.creds}</p>
-            <p><strong>Courses:</strong> {profile.courses}</p>
-            <p><strong>Availability:</strong> {profile.available}</p>
-            <p><strong>Times Selected:</strong> {profile.timesSelected}</p>
-            <p><strong>Blocked:</strong> {profile.blocked ? "Yes" : "No"}</p>
+
+            {role === "tutor" ? (
+            <>
+              <p><strong>Skills:</strong> {profile.skillsList}</p>
+              <p><strong>Credentials:</strong> {profile.academicCredentials}</p>
+              <p><strong>Availability:</strong> {profile.availableFullTime ? "Full-Time" : "Part-Time"}</p>
+              <p><strong>Times Selected:</strong> {profile.timesSelected}</p>
+              <p><strong>Blocked:</strong> {profile.blocked ? "Yes" : "No"}</p>
+            </>
+          ) : null}
             <p><strong>Join Date:</strong> {new Date(profile.joinDate).toLocaleDateString()}</p>
           </>
         ) : (

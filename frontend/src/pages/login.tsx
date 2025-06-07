@@ -139,13 +139,13 @@ export default function Home() {
         position: "top",
       });
       setTimeout(() => {
-        if (user.name === "Admin") {
+        if (user.role === "Admin") {
           localStorage.setItem("login", "admin");
           //window.location.href = "/lecturers";
-        } else if (user.lecturer === true) {
+        } else if (user.role === "lecturer") {
           localStorage.setItem("login", "lecturer");
           //window.location.href = "/lecturers";
-        } else {
+        } else if (user.role === "tutor") {
           localStorage.setItem("login", "tutor");
           //window.location.href = "/tutors";
         }

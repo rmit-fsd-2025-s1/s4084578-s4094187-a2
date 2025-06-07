@@ -26,11 +26,11 @@ router.post("/login", async(req, res) => {
         res.status(404).json({ message: "User not found" });
         return;
       }
-      res.json(tutor);
+      res.json({...tutor, role: "tutor"});
       return;
     }
 
-    res.json(lecturer);
+    res.json({...lecturer, role: "lecturer"});
 
     /*res.json({
       id: user.id,
