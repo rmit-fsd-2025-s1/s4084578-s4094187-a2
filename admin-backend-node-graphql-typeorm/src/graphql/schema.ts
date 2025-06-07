@@ -43,11 +43,14 @@ export const typeDefs = gql`
   type Query { 
     courses: [Course!]!
     lecturers: [Lecturer!]!
+    # finds all courses that a lecturer is assigned to by their id
+    lecturerCourses(lecturerId: ID!): [Lecturer_Course!]!
   }
 
   type Mutation {
     createCourse(course_id: Int!, name: String!): Course!
     updateCourse(id: ID!, course_id: Int, name: String): Course!
     deleteCourse(id: ID!): Boolean!
+    assignCourseToLecturer(lecturerId: ID!, courseId: ID!): Lecturer_Course!
   }
 `

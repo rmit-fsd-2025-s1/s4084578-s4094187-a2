@@ -1,9 +1,11 @@
 import { Lecturer } from "../entity/Lecturer"
 import { AppDataSource } from "../data-source"
 import { Course } from "../entity/Course"
+import { Lecturer_Course } from "../entity/Lecturer_Course"
 
 const courseRepository = AppDataSource.getRepository(Course)
 const lecturerRepostiory = AppDataSource.getRepository(Lecturer)
+const lecturerCourseRepository = AppDataSource.getRepository(Lecturer_Course)
 
 export const resolvers = {
 
@@ -14,7 +16,16 @@ export const resolvers = {
 
     lecturers: async () => {
       return await lecturerRepostiory.find()
-    }
+    },
+
+    lecturerCourses: async (
+      _: unknown, 
+      { lecturerId }: { lecturerId: string }
+    ) =>
+      lecturerCourseRepository.find({
+        where: { lecturer: { id: lecturerId } },
+        relations: { course: true, lecturer: true }
+      }),
   },
 
   Mutation: {
@@ -50,6 +61,18 @@ export const resolvers = {
       // error if course doesn't exist
       if (!result.affected) throw new Error(`Course with id ${id} not found`)
       return true
-    }
-  }
+    },
+
+    assignCourseToLecturer: async (
+      _: unknown, 
+      { lecturerId, courseId }: { lecturerId: string; courseId: string }
+    ) => {
+      const [lecturer, course] = await Promise.all([
+        lecturerRepostiory.findOneByOrFail({ id: lecturerId }),
+        courseRepository.findOneByOrFail({ id: courseId })
+      ]);
+      const lecturerCourse = lecturerCourseRepository.create({ lecturer, course })
+      return lecturerCourseRepository.save(lecturerCourse)
+    },
+  },
 }
