@@ -7,11 +7,27 @@ export interface Course {
   name: string;
 }
 
+export interface Lecturer {
+  id: string;
+  name: string;
+  email: string;
+}
+
 const GET_COURSES = gql`
   query GetCourses {
     courses {
       id
       course_id
+      name
+    }
+  }
+`
+
+const GET_LECTURERS = gql`
+  query GetLecturers {
+    lecturers {
+      id
+      email
       name
     }
   }
@@ -62,4 +78,11 @@ export const courseService = {
   deleteCourse: async (id: string): Promise<void> => {
     await client.mutate({ mutation: DELETE_COURSE, variables: { id }})
   }
+}
+
+export const lecturerService ={
+  getLecturers: async (): Promise<Lecturer[]> => {
+    const { data } = await client.query({ query: GET_LECTURERS, fetchPolicy: "network-only" })
+    return data.lecturers
+  },
 }
