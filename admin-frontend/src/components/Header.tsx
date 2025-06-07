@@ -25,9 +25,7 @@ const Header = () => {
       <NavBarButton label='Candidate Management' page='/candidates'/>
       <NavBarButton label='Course Management' page='/courses'/>
       <NavBarButton label='Lecturer Management' page='/lecturers'/>
-      <NavBarButton label='Report: Chosen Candidates' page='/chosen_candidates'/>
-      <NavBarButton label='Report: Popular Candidates' page='/popular_candidates'/>
-      <NavBarButton label='Report: Unchosen Candidates' page='/unchosen_candidates'/>
+      <NavBarButton label='Reports' page='/reports'/>
       <NavBarLogout label='Logout'/>
     </div>
   );

@@ -14,7 +14,7 @@ export default function AdminLogin() {
       localStorage.setItem("isAdmin", "true");
       router.push("/courses");
     } else {
-      alert("Invalid admin credentials");
+      alert("Invalid login details");
     }
   };
 
