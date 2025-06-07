@@ -21,9 +21,9 @@ export const typeDefs = gql`
     email: String!
     password: String!
     name: String!
-    available_full_time: Boolean!
-    skills_list: String!
-    academic_credentials: String!
+    availableFullTime: Boolean!
+    skillsList: String!
+    academicCredentials: String!
     blocked: Boolean!
   }
   
@@ -43,6 +43,7 @@ export const typeDefs = gql`
   type Query { 
     courses: [Course!]!
     lecturers: [Lecturer!]!
+    tutors: [Tutor!]!
     # finds all courses that a lecturer is assigned to by their id
     lecturerCourses(lecturerId: ID!): [Lecturer_Course!]!
   }

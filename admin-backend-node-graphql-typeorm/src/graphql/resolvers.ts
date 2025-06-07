@@ -2,10 +2,12 @@ import { Lecturer } from "../entity/Lecturer"
 import { AppDataSource } from "../data-source"
 import { Course } from "../entity/Course"
 import { Lecturer_Course } from "../entity/Lecturer_Course"
+import { Tutor } from "../entity/Tutor"
 
 const courseRepository = AppDataSource.getRepository(Course)
 const lecturerRepository = AppDataSource.getRepository(Lecturer)
 const lecturerCourseRepository = AppDataSource.getRepository(Lecturer_Course)
+const tutorRepository = AppDataSource.getRepository(Tutor)
 
 export const resolvers = {
 
@@ -18,14 +20,18 @@ export const resolvers = {
       return await lecturerRepository.find()
     },
 
+    tutors: async () => {
+      return await tutorRepository.find()
+    },
+
     lecturerCourses: async (
       _: unknown, 
       { lecturerId }: { lecturerId: string }
     ) =>
-      lecturerCourseRepository.find({
-        where: { lecturer: { id: lecturerId } },
-        relations: { course: true, lecturer: true }
-      }),
+    lecturerCourseRepository.find({
+      where: { lecturer: { id: lecturerId } },
+      relations: { course: true, lecturer: true }
+    }),
   },
 
   Mutation: {

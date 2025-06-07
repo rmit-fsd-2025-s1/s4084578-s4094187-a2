@@ -103,8 +103,8 @@ export default function Home() {
               <Tr>
                 <Th>Name</Th>
                 <Th>ID</Th>
-                <Th></Th>
-                <Th></Th>
+                <Th/>
+                <Th/>
               </Tr>
             </Thead>
             <Tbody>

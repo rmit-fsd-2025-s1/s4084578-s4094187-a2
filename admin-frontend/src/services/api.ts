@@ -13,6 +13,15 @@ export interface Lecturer {
   email: string;
 }
 
+export interface Tutor {
+  id: string;
+  name: string;
+  availableFullTime: boolean;
+  skillsList: string;
+  academicCredentials: string;
+  blocked: boolean;
+}
+
 export interface LecturerCourse {
   lecturer_course_id: string;
   lecturer: {
@@ -41,6 +50,19 @@ const GET_LECTURERS = gql`
       id
       email
       name
+    }
+  }
+`
+
+const GET_TUTORS = gql`
+  query GetTutors {
+    tutors {
+      id
+      name
+      availableFullTime
+      skillsList
+      academicCredentials
+      blocked
     }
   }
 `
@@ -127,6 +149,13 @@ export const lecturerService ={
   getLecturers: async (): Promise<Lecturer[]> => {
     const { data } = await client.query({ query: GET_LECTURERS, fetchPolicy: "network-only" })
     return data.lecturers
+  }
+}
+
+export const tutorService ={
+  getTutors: async (): Promise<Tutor[]> => {
+    const { data } = await client.query({ query: GET_TUTORS, fetchPolicy: "network-only" })
+    return data.tutors
   }
 }
 

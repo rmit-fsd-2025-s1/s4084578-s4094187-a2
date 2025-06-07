@@ -16,13 +16,13 @@ export class Tutor {
     name: string;
 
     @Column({ type: "tinyint"})
-    available_full_time: boolean;
+    availableFullTime: boolean;
 
     @Column({ type: "varchar", length: 255})
-    skills_list: string;
+    skillsList: string;
 
     @Column({ type: "varchar", length: 255})
-    academic_credentials: string;
+    academicCredentials: string;
 
     @Column({ type: "tinyint"})
     blocked: boolean;
