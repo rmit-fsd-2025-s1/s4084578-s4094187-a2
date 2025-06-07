@@ -59,6 +59,15 @@ const DELETE_COURSE = gql`
   }
 `
 
+const ASSIGN_COURSE = gql`
+  mutation AssignCourse($lecturerId: ID!, $courseId: ID!) {
+    assignCourseToLecturer(lecturerId: $lecturerId, courseId: $courseId) {
+      lecturer_course_id
+      course { id name }
+    }
+  }
+`
+
 export const courseService = {
   getCourses: async (): Promise<Course[]> => {
     const { data } = await client.query({ query: GET_COURSES, fetchPolicy: "network-only" })
@@ -84,5 +93,13 @@ export const lecturerService ={
   getLecturers: async (): Promise<Lecturer[]> => {
     const { data } = await client.query({ query: GET_LECTURERS, fetchPolicy: "network-only" })
     return data.lecturers
-  },
+  }
+}
+
+export const lecturerCourseService = {
+  assignCourse: (lecturerId: string, courseId: string) =>
+    client.mutate({
+      mutation: ASSIGN_COURSE,
+      variables: { lecturerId, courseId },
+    }),
 }
