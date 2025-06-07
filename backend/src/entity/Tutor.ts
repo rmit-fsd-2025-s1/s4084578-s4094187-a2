@@ -27,7 +27,7 @@ export class Tutor {
     @Column({type: "int", default: 0})
     timesSelected: number;
 
-    @Column({ type: "tinyint"})
+    @Column({default: false, type: "tinyint"})
     blocked: boolean;
 
     @Column({ nullable: true, type: "varchar", length: 255})
