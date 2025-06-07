@@ -99,6 +99,16 @@ export const resolvers = {
         throw new Error(`Lecturer_Course row ${lecturerCourseId} not found`)
       }
       return true
+    },
+
+    updateTutorBlock: async (_: any, { id, blocked }: { id: string, blocked: boolean }) => {
+      const tutor = await tutorRepository.findOneBy({ id });
+      if (!tutor) {
+        throw new Error("Tutor not found");
+      }
+      tutor.blocked = blocked;
+      await tutorRepository.save(tutor);
+      return tutor;
     }
-  },
+  }
 }

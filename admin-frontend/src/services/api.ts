@@ -67,6 +67,15 @@ const GET_TUTORS = gql`
   }
 `
 
+const TOGGLE_TUTOR_BLOCK = gql`
+  mutation ToggleTutorBlock($id: ID!, $blocked: Boolean!) {
+    updateTutorBlock(id: $id, blocked: $blocked) {
+      id
+      blocked
+    }
+  }
+`
+
 const CREATE_COURSE = gql`
   mutation CreateCourse($course_id: Int!, $name: String!) {
     createCourse(course_id: $course_id, name: $name) {
@@ -156,6 +165,13 @@ export const tutorService ={
   getTutors: async (): Promise<Tutor[]> => {
     const { data } = await client.query({ query: GET_TUTORS, fetchPolicy: "network-only" })
     return data.tutors
+  },
+
+  toggleTutorBlock: async (id: string, blocked: boolean): Promise<void> => {
+    await client.mutate({
+      mutation: TOGGLE_TUTOR_BLOCK,
+      variables: { id, blocked },
+    })
   }
 }
 

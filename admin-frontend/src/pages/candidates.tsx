@@ -1,5 +1,5 @@
 import { Tutor, tutorService } from "@/services/api";
-import { Box, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -9,6 +9,17 @@ export default function Home() {
   useEffect(() => {
     tutorService.getTutors().then(setTutors)
   }, [])
+
+  const handleToggleBlock = async (tutorId: string, currentlyBlocked: boolean) => {
+    try {
+      // pass !currentlyBlocked to pass the opposite value, switching it
+      await tutorService.toggleTutorBlock(tutorId, !currentlyBlocked)
+      // update state
+      setTutors(prev => prev.map(tutor => tutor.id === tutorId ? { ...tutor, blocked: !currentlyBlocked } : tutor))
+    } catch (error) {
+      console.error("Failed to toggle blocked status:", error);
+    }
+  }
 
   return (
     <div>
@@ -32,7 +43,14 @@ export default function Home() {
                   <Td>{tutor.availableFullTime ? "Full Time" : "Part Time"}</Td>
                   <Td>{tutor.skillsList}</Td>
                   <Td>{tutor.academicCredentials}</Td>
-                  <Td></Td>
+                  <Td>
+                    <Button
+                      colorScheme={tutor.blocked ? "green" : "red"}
+                      onClick={() => handleToggleBlock(tutor.id, tutor.blocked)}
+                    >
+                      {tutor.blocked ? "Unblock" : "Block"}
+                    </Button>
+                  </Td>
                 </Tr>
               ))}
             </Tbody>

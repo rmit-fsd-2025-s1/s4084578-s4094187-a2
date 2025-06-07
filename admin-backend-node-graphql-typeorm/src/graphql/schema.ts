@@ -54,5 +54,6 @@ export const typeDefs = gql`
     deleteCourse(id: ID!): Boolean!
     assignCourseToLecturer(lecturerId: ID!, courseId: ID!): Lecturer_Course!
     deleteLecturerCourse(lecturerCourseId: ID!): Boolean!
+    updateTutorBlock(id: ID!, blocked: Boolean!): Tutor!
   }
 `
