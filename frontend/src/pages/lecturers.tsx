@@ -7,7 +7,19 @@ import {
 import Layout from '../components/Layout';
 
 export default function Home() {
-  const [tutors, setTutors] = useState<any[]>([]); //Hold tutor data
+  type Tutor = {
+    id: number;
+    name: string;
+    availableFullTime: boolean;
+    skillsList: string;
+    academicCredentials: string;
+    Selected?: boolean;
+    timesSelected: number;
+    blocked: boolean;
+    comments?: string;
+  };
+
+  const [tutors, setTutors] = useState<Tutor[]>([]); //Hold tutor data
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal control
   const [rankings, setRankings] = useState<{ [tutorId: number]: number }>({});
   const [comments, setComments] = useState<{ [tutorId: number]: string }>({});
@@ -30,7 +42,7 @@ export default function Home() {
         setTutors(data);
 
         const initialComments: { [id: number]: string } = {};
-        data.forEach((t: any) => {
+        data.forEach((t: Tutor) => {
           initialComments[t.id] = t.comments || '';
         });
         setComments(initialComments);
@@ -103,8 +115,8 @@ export default function Home() {
   const sortedTutors = [...tutors].sort((a, b) => {
     if (!sortColumn) return 0;
   
-    const valA = a[sortColumn];
-    const valB = b[sortColumn];
+    const valA = a[sortColumn as keyof Tutor];
+    const valB = b[sortColumn as keyof Tutor];
   
     if (typeof valA === 'string' && typeof valB === 'string') {
       return sortDirection === 'asc'
@@ -283,7 +295,7 @@ export default function Home() {
                     ...tutor,
                     Comment: comments[tutor.id] || '',
                     Selected: false,
-                    TimesSelected: (tutor.TimesSelected || 0) + 1,
+                    TimesSelected: (tutor.timesSelected || 0) + 1,
                   };
 
                   updated[index] = updatedTutor;
@@ -305,7 +317,7 @@ export default function Home() {
                 const response = await fetch('http://localhost:5050/api/search');
                 const data = await response.json();
                 
-                const deselectedData = data.map((t: any) => ({
+                const deselectedData = data.map((t: Tutor) => ({
                   ...t,
                   Selected: false,
                 }));
@@ -313,7 +325,7 @@ export default function Home() {
                 setTutors(deselectedData);
 
                 const updatedComments: { [id: number]: string } = {};
-                data.forEach((t: any) => {
+                data.forEach((t: Tutor) => {
                   updatedComments[t.id] = t.comments || '';
                 });
                 setComments(updatedComments);
