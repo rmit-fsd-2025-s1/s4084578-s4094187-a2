@@ -89,13 +89,33 @@ export default function Home() {
     alert("Not implemented!");
   };
 
-  const handleTutorApplication = () => {
-    alert("Not implemented!");
-  };
-
-  const handleLabAssistantApplication = () => {
-    alert("Not implemented!");
-  };
+  const handleApplication = async (courseDbId: string, role: boolean) => {
+  const email = localStorage.getItem("account")
+  if (!email) {
+    alert("No logged-in tutor found")
+    return
+  }
+  try {
+    const res = await fetch("http://localhost:5050/api/applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, courseId: courseDbId, tutorRole: role })
+    })
+    if (res.status === 201) {
+      alert("Your application has been submitted")
+    } 
+    else if (res.status === 409) {
+      alert("You already have a pending application for this course")
+    } 
+    else {
+      const { error } = await res.json()
+      alert(`Error: ${error}`)
+    }
+  } catch (err) {
+    console.error("Failed to submit application:", err)
+    alert("Failed to submit application.")
+  }
+}
 
   // ensure page does not load when there is no tutor logged in
   if(!tutorLoginExists) {
@@ -129,11 +149,11 @@ export default function Home() {
                 <Td>{course.name}</Td>
                 {/* tutor apply button */}
                 <Td>
-                  <Button onClick={handleTutorApplication}>Apply</Button>
+                  <Button onClick={() => handleApplication(course.id, true)}>Apply</Button>
                 </Td>
                 {/* lab assistant apply button */}
                 <Td>
-                  <Button onClick={handleLabAssistantApplication}>Apply</Button>
+                  <Button onClick={() => handleApplication(course.id, false)}>Apply</Button>
                 </Td>
               </Tr>
             ))}

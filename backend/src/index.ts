@@ -5,19 +5,19 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user.routes";
 import courseRouter from "./routes/course.routes"
 import tutorRouter from "./routes/tutor.routes"
+import tutorApplicationRouter from "./routes/tutorApplications.routes"
 import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-app.use(cors({
-  origin: 'http://localhost:3000'
-}))
+app.use(cors({origin: 'http://localhost:3000'}))
 app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRouter)
 app.use("/api/tutors", tutorRouter)
+app.use("/api/applications", tutorApplicationRouter)
 
 AppDataSource.initialize()
   .then(() => {
