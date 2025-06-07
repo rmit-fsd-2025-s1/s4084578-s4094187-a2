@@ -17,7 +17,8 @@ import {
   VStack,
   HStack,
   Text,
-  Select
+  Select,
+  useToast
 } from "@chakra-ui/react";
 
 export default function Home() {
@@ -46,7 +47,7 @@ export default function Home() {
   const [skillInput, setSkillInput] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
   const [creds, setCreds] = useState("");
-
+  const toast = useToast();
   const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
 
   const isValidPassword = (password: string) => {
@@ -72,11 +73,25 @@ export default function Home() {
 
   const registerLecturer = async () => {
     if (!isValidEmail(lecturerEmail)) {
-      alert("Email must be an @rmit.edu.au address");
+      toast({
+        title: "Invalid Email",
+        description: "Email must be an @rmit.edu.au address",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
     if (!isValidPassword(lecturerPassword)) {
-      alert("Password must be at least 8 characters long and include letters, numbers, and special characters");
+      toast({
+        title: "Invalid Password",
+        description: "Password must be at least 8 characters long and include letters, numbers, and special characters",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
     const res = await fetch("http://localhost:5050/api/register/lecturer", {
@@ -90,25 +105,60 @@ export default function Home() {
     });
 
     if (res.ok) {
-      alert("Lecturer registered successfully");
+      toast({
+        title: "Successful Signup",
+        description: "Lecturer registered successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       onLecturerClose();
     } else {
-      alert("Error registering lecturer");
+      toast({
+        title: "Failed Signup",
+        description: "Error registering lecturer",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 
   const registerTutor = async () => {
     if (!isValidEmail(tutorEmail)) {
-      alert("Email must be an @rmit.edu.au address");
+      toast({
+        title: "Invalid Email",
+        description: "Email must be an @rmit.edu.au address",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
     if (!isValidPassword(tutorPassword)) {
-      alert("Password must be at least 8 characters long and include letters, numbers, and special characters");
+      toast({
+        title: "Invalid Password",
+        description: "Password must be at least 8 characters long and include letters, numbers, and special characters",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
 
     if (!creds) {
-      alert("Please select an academic credential");
+      toast({
+        title: "Invalid Credential",
+        description: "Please select an academic credential",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
     const res = await fetch("http://localhost:5050/api/register/tutor", {
@@ -125,10 +175,24 @@ export default function Home() {
     });
 
     if (res.ok) {
-      alert("Tutor registered successfully");
+      toast({
+        title: "Successful Signup",
+        description: "Tutor registered successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       onTutorClose();
     } else {
-      alert("Error registering tutor");
+      toast({
+        title: "Failed Signup",
+        description: "Error registering tutor",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
     }
   };
 
