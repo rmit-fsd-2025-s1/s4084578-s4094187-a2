@@ -371,6 +371,33 @@ export default function Home() {
             })()}
           </Box>
         </SimpleGrid>
+
+        {/* Bar Graph */}
+        <Box mt={10} p={4} borderWidth="1px" borderRadius="lg">
+          <Text fontWeight="bold" mb={4}>Times Selected Per Tutor</Text>
+          {tutors.length === 0 ? (
+            <Text>No tutors found.</Text>
+          ) : (
+            <Box>
+              {(() => {
+                const maxTimes = Math.max(...tutors.map(t => t.timesSelected || 0)) || 1; // avoid divide by 0
+                return tutors.map((t, i) => (
+                  <Box key={i} mb={2}>
+                    <Text fontSize="sm">{t.name} ({t.timesSelected || 0})</Text>
+                    <Box bg="gray.100" h="6" borderRadius="md" overflow="hidden">
+                      <Box
+                        h="100%"
+                        bg="teal.500"
+                        width={`${((t.timesSelected || 0) / maxTimes) * 100}%`}
+                        transition="width 0.3s ease"
+                      />
+                    </Box>
+                  </Box>
+                ));
+              })()}
+            </Box>
+          )}
+        </Box>
       </Box>
     </Layout>
   );
