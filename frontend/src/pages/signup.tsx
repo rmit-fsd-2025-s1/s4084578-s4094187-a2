@@ -1,67 +1,163 @@
 import Layout from "../components/Layout";
-import React from "react";
-import Link from "next/link";
-import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Switch,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  VStack,
+  HStack,
+  Text
+} from "@chakra-ui/react";
 
 export default function Home() {
+  const {
+    isOpen: isLecturerOpen,
+    onOpen: onLecturerOpen,
+    onClose: onLecturerClose
+  } = useDisclosure();
 
-  const [signUpEmail, setSignUpEmail] =useState<String>()
-  const [signUpPassword, setSignUpPassword] =useState<String>()
+  const {
+    isOpen: isTutorOpen,
+    onOpen: onTutorOpen,
+    onClose: onTutorClose
+  } = useDisclosure();
 
-  const registerUser = () => {
-    alert("Non Functioning")
-    /*
-    // initialise index to the lowest number without an account
-    let index = 1;
-    let data = localStorage.getItem(`userInfo${index}`)
+  // Lecturer form state
+  const [lecturerEmail, setLecturerEmail] = useState("");
+  const [lecturerPassword, setLecturerPassword] = useState("");
+  const [lecturerName, setLecturerName] = useState("");
 
-    // while loop will set index to the correct value
-    while ((data = localStorage.getItem(`userInfo${index}`))) {
-      index++;
+  // Tutor form state
+  const [tutorEmail, setTutorEmail] = useState("");
+  const [tutorPassword, setTutorPassword] = useState("");
+  const [tutorName, setTutorName] = useState("");
+  const [availability, setAvailability] = useState(false);
+  const [skills, setSkills] = useState("");
+  const [creds, setCreds] = useState("");
+
+  const registerLecturer = async () => {
+    const res = await fetch("http://localhost:5050/api/register/lecturer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: lecturerEmail,
+        password: lecturerPassword,
+        name: lecturerName
+      })
+    });
+
+    if (res.ok) {
+      alert("Lecturer registered successfully");
+      onLecturerClose();
+    } else {
+      alert("Error registering lecturer");
     }
+  };
 
-    // setup an object for passing to local storage
-    const userInfo = {
-      Email: signUpEmail,
-      Password: signUpPassword,
-    };
+  const registerTutor = async () => {
+    const res = await fetch("http://localhost:5050/api/register/tutor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: tutorEmail,
+        password: tutorPassword,
+        name: tutorName,
+        availableFullTime: availability,
+        skillsList: skills,
+        academicCredentials: creds
+      })
+    });
 
-    localStorage.setItem(`userInfo${index}`, JSON.stringify(userInfo))
-    */
-  }
+    if (res.ok) {
+      alert("Tutor registered successfully");
+      onTutorClose();
+    } else {
+      alert("Error registering tutor");
+    }
+  };
 
   return (
-
     <Layout>
+      <VStack spacing={6}>
+        <Text fontSize="lg">
+          Already have an account? <a href="/login">Click here</a>
+        </Text>
 
-      <div>
-        <Link href="/login" className="nav-link">
-          Already have an account? Click here.
-        </Link>
-      </div>
+        <HStack spacing={4}>
+          <Button colorScheme="blue" onClick={onLecturerOpen}>
+            Sign up as Lecturer
+          </Button>
+          <Button colorScheme="blue" onClick={onTutorOpen}>
+            Sign up as Tutor
+          </Button>
+        </HStack>
 
-      <br/>
+        {/* Lecturer Modal */}
+        <Modal isOpen={isLecturerOpen} onClose={onLecturerClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Lecturer Signup</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <FormControl>
+                <FormLabel>Email</FormLabel>
+                <Input value={lecturerEmail} onChange={(e) => setLecturerEmail(e.target.value)} />
+                <FormLabel mt={3}>Password</FormLabel>
+                <Input type="password" value={lecturerPassword} onChange={(e) => setLecturerPassword(e.target.value)} />
+                <FormLabel mt={3}>Full Name</FormLabel>
+                <Input value={lecturerName} onChange={(e) => setLecturerName(e.target.value)} />
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={registerLecturer}>
+                Register
+              </Button>
+              <Button onClick={onLecturerClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
 
-      <FormControl>
-        <FormLabel>Email</FormLabel>
-          <Input 
-            placeholder='Email' 
-            onChange={(e) => setSignUpEmail(e.target.value)}
-          />
-        <FormLabel>Password</FormLabel>
-          <Input 
-            placeholder='Password' 
-            onChange={(e) => setSignUpPassword(e.target.value)}
-          />
-      </FormControl>
-
-      <br/>
-
-      <Button onClick={registerUser} data-testid="signup-button">
-        Register
-      </Button>
-
+        {/* Tutor Modal */}
+        <Modal isOpen={isTutorOpen} onClose={onTutorClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Tutor Signup</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <FormControl>
+                <FormLabel>Email</FormLabel>
+                <Input value={tutorEmail} onChange={(e) => setTutorEmail(e.target.value)} />
+                <FormLabel mt={3}>Password</FormLabel>
+                <Input type="password" value={tutorPassword} onChange={(e) => setTutorPassword(e.target.value)} />
+                <FormLabel mt={3}>Full Name</FormLabel>
+                <Input value={tutorName} onChange={(e) => setTutorName(e.target.value)} />
+                <FormLabel mt={3}>Available Full Time</FormLabel>
+                <Switch isChecked={availability} onChange={(e) => setAvailability(e.target.checked)} />
+                <FormLabel mt={3}>Skills</FormLabel>
+                <Input value={skills} onChange={(e) => setSkills(e.target.value)} />
+                <FormLabel mt={3}>Academic Credentials</FormLabel>
+                <Input value={creds} onChange={(e) => setCreds(e.target.value)} />
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="green" mr={3} onClick={registerTutor}>
+                Register
+              </Button>
+              <Button onClick={onTutorClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </VStack>
     </Layout>
   );
 }

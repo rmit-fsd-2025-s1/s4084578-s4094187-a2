@@ -31,6 +31,67 @@ router.post("/login", async(req, res) => {
   });*/
 });
 
+router.post('/register/lecturer', async (req, res) => {
+  const { email, password, name } = req.body;
+
+  if (!email || !password || !name) {
+    res.status(400).json({ error: "Missing required fields" });
+    return;
+  }
+
+  try {
+    await lecturerRepo.query(
+      'INSERT INTO lecturers (email, password, name) VALUES (?, ?, ?)',
+      [email, password, name]
+    );
+
+    res.sendStatus(201);
+  } catch (err) {
+    console.error("Lecturer registration failed:", err);
+    res.status(500).json({ error: "Could not register lecturer" });
+  }
+});
+
+router.post('/register/tutor', async (req, res) => {
+  const {
+    email,
+    password,
+    name,
+    availableFullTime,
+    skillsList,
+    academicCredentials,
+    comments
+  } = req.body;
+
+  if (!email || !password || !name || skillsList === undefined || academicCredentials === undefined) {
+    res.status(400).json({ error: "Missing required tutor fields" });
+    return;
+  }
+
+  try {
+
+    await tutorRepo.query(
+      `INSERT INTO tutors
+        (email, password, name, availableFullTime, skillsList, academicCredentials, comments, timesSelected, blocked)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 0, false)`,
+      [
+        email,
+        password,
+        name,
+        availableFullTime ? 1 : 0,
+        skillsList,
+        academicCredentials,
+        comments || null
+      ]
+    );
+
+    res.sendStatus(201);
+  } catch (err) {
+    console.error("Tutor registration failed:", err);
+    res.status(500).json({ error: "Could not register tutor" });
+  }
+});
+
 router.get("/profile", async (req, res) => {
   const { email } = req.query;
 

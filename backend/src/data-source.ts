@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
   username: "S4084578",
   password: "pepwox-1voqpo-vEdqaq",
   database: "S4084578",
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: [Tutor, Lecturer, Tutor_Application, Lecturer_Course, Course],
   migrations: [],
