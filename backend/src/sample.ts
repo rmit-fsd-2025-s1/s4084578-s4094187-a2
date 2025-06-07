@@ -4,10 +4,9 @@ import { Lecturer } from "./entity/Lecturer";
 
 const sampleLecturers = [
       {
-        //Admin Login Data
-        email: "Admin@rmit.edu.au",
+        email: "AidenCobb@rmit.edu.au",
         password: "wlCO5g06~2S(",
-        name: "Admin",
+        name: "Aiden Cobb",
         lecturerCourses: []
       },
       {

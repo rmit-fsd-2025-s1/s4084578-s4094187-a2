@@ -141,13 +141,10 @@ export default function Home() {
       setTimeout(() => {
         if (user.role === "Admin") {
           localStorage.setItem("login", "admin");
-          //window.location.href = "/lecturers";
         } else if (user.role === "lecturer") {
           localStorage.setItem("login", "lecturer");
-          //window.location.href = "/lecturers";
         } else if (user.role === "tutor") {
           localStorage.setItem("login", "tutor");
-          //window.location.href = "/tutors";
         }
         router.push("/");
       }, 3000); // wait 3 seconds for toast to show
