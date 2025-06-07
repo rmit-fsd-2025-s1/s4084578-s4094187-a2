@@ -28,6 +28,13 @@ export default function Home() {
         const response = await fetch(`http://localhost:5050/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
         setTutors(data);
+
+        const initialComments: { [id: number]: string } = {};
+        data.forEach((t: any) => {
+          initialComments[t.id] = t.comments || '';
+        });
+        setComments(initialComments);
+      
         console.log('Fetched tutor data:', data);
       } catch (error) {
         console.error('Error fetching tutors:', error);
@@ -248,7 +255,7 @@ export default function Home() {
                         </Td>
                         <Td>
                           <textarea
-                            value={comments[tutor.id] || ''}
+                            value={comments[tutor.id] ?? tutor.comments ?? ''}
                             onChange={(e) =>
                               setComments({ ...comments, [tutor.id]: e.target.value })
                             }
@@ -294,9 +301,27 @@ export default function Home() {
                 }
               }
 
-              setTutors(updated);
+              try {
+                const response = await fetch('http://localhost:5050/api/search');
+                const data = await response.json();
+                
+                const deselectedData = data.map((t: any) => ({
+                  ...t,
+                  Selected: false,
+                }));
+
+                setTutors(deselectedData);
+
+                const updatedComments: { [id: number]: string } = {};
+                data.forEach((t: any) => {
+                  updatedComments[t.id] = t.comments || '';
+                });
+                setComments(updatedComments);
+              } catch (error) {
+                console.error('Error re-fetching tutors after update:', error);
+              }
+
               setRankings({});
-              setComments({});
               onClose();
             }}>
             Submit Rankings
