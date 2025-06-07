@@ -1,6 +1,5 @@
 import Layout from "../components/Layout";
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   TableContainer, Table, Thead, Tr, Th, Tbody, Td, Button, Box, Heading,
   FormControl, FormLabel, Input, Stack, RadioGroup, Radio, Text, HStack 
@@ -66,7 +65,7 @@ export default function Home() {
         console.log("Fetched tutor data:", tutorData)
         setCurrentTutor({
           Name: tutorData.name || "",
-          Available: tutorData.availableFullTime === 1 ? "Full Time" : "Part Time",
+          Available: tutorData.availableFullTime === true ? "Full Time" : "Part Time",
           Skills: tutorData.skillsList || "",
           Creds: tutorData.academicCredentials || "",
         });
@@ -85,14 +84,14 @@ export default function Home() {
   }, [currentTutor]);
 
   // function to process the form
-  const updateTutorDetails = () => {
-    alert("Not implemented!");
-  };
+  const updateTutorDetails = async () => {
+    alert("Not implemented")
+  }
 
   const handleApplication = async (courseDbId: string, role: boolean) => {
   const email = localStorage.getItem("account")
   if (!email) {
-    alert("No logged-in tutor found")
+    alert("No tutor login found, please login.")
     return
   }
   try {
