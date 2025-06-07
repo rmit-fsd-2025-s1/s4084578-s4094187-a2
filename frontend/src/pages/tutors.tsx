@@ -1,8 +1,10 @@
 import Layout from "../components/Layout";
 import React from "react";
 import { useEffect, useState } from "react";
-import { TableContainer, Table, Thead, Tr, Th, Tbody, Td, Button, Box, Heading,
-       FormControl, FormLabel, Input, Stack, RadioGroup, Radio, Text, HStack } from "@chakra-ui/react";
+import { 
+  TableContainer, Table, Thead, Tr, Th, Tbody, Td, Button, Box, Heading,
+  FormControl, FormLabel, Input, Stack, RadioGroup, Radio, Text, HStack 
+} from "@chakra-ui/react";
 
 interface Course {
   id: string;
@@ -15,20 +17,11 @@ interface Tutor {
   Available: "Full Time" | "Part Time" | "";
   Skills: string;
   Creds: string;
-  Courses: string;
 };
-
 
 export default function Home() {
 
   const [CoursesArray, setCoursesArray] = useState<Course[]>([])
-
-  useEffect(() => {
-    fetch("http://localhost:5050/api/courses")
-    .then((res) => res.json())
-    .then((data) => setCoursesArray(data))
-    .catch((err) => console.error("Failed to fetch courses:", err))
-  }, []);
 
   // useState for the currently logged in tutor
   const [currentTutor, setCurrentTutor] =useState<Tutor>({
@@ -36,7 +29,6 @@ export default function Home() {
     Available: "",
     Skills: "",
     Creds: "",
-    Courses: "",
   })
 
   // useState for the data currently in the form
@@ -45,50 +37,45 @@ export default function Home() {
     Available: "",
     Skills: "",
     Creds: "",
-    Courses: ""
   });
-
-  // Track key of logged in tutor
-  const [tutorKey, setTutorKey] = useState<number | null>(null);
 
   // useState to help verify that there is a logged in tutor
   const [tutorLoginExists, setTutorLoginExists] = useState(false);
 
-  //Splits courses to check if present
-  const isCourseApplied = (courseName: string) => {
-    return formData.Courses.split(", ").includes(courseName);
-  };
-
   useEffect(() => {
-    localStorage.setItem("courses", JSON.stringify(CoursesArray))
 
-    //Loop through
-    let key = 0;
-    let storedTutor = JSON.parse(localStorage.getItem("userInfo" + key) || 'null');
-    let email = localStorage.getItem("account");
-    //Iterate through stored userInfo
-    //While loop is used because foreach and map cannot break
-    while (storedTutor != null && email != storedTutor.Email) {
-      if (localStorage.getItem("userInfo" + key) != null) {
-        storedTutor = JSON.parse(localStorage.getItem("userInfo" + key) || 'null');
-        ++key;
-      }
-      else {
-        break;
-      }
-    }
-    --key;
-    setTutorKey(key);
-    if (storedTutor) {
-      setCurrentTutor(storedTutor);
-    }
+    // fetch courses
+    fetch("http://localhost:5050/api/courses")
+    .then((res) => res.json())
+    .then((data) => setCoursesArray(data))
+    .catch((err) => console.error("Failed to fetch courses:", err))
 
     // checking that there is a logged in tutor when page loads
     const tutorLoginCheck = localStorage.getItem("login");
+    const userEmail = localStorage.getItem("account")
     if (tutorLoginCheck === "tutor" || tutorLoginCheck === "admin") {
       setTutorLoginExists(true)
+      fetch(`http://localhost:5050/api/tutors/profile?email=${userEmail}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch tutor profile");
+        }
+        return res.json();
+      })
+      .then((tutorData) => {
+        console.log("Fetched tutor data:", tutorData)
+        setCurrentTutor({
+          Name: tutorData.name || "",
+          Available: tutorData.availableFullTime === 1 ? "Full Time" : "Part Time",
+          Skills: tutorData.skillsList || "",
+          Creds: tutorData.academicCredentials || "",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to fetch tutor profile:", err);
+      });
     }
-  }, []);
+  }, [])
 
   // when currentTutor changes, update the formData useState to ensure that the form is pre-filled
   useEffect(() => {
@@ -97,15 +84,17 @@ export default function Home() {
     }
   }, [currentTutor]);
 
-  //Handle the toggle button
-  const handleApplyToggle = (courseName: string) => {
-  };
-
   // function to process the form
   const updateTutorDetails = () => {
-    localStorage.setItem("userInfo" + tutorKey, JSON.stringify(formData));
-    setCurrentTutor(formData);
-    alert("Tutor details updated!");
+    alert("Not implemented!");
+  };
+
+  const handleTutorApplication = () => {
+    alert("Not implemented!");
+  };
+
+  const handleLabAssistantApplication = () => {
+    alert("Not implemented!");
   };
 
   // ensure page does not load when there is no tutor logged in
@@ -128,30 +117,31 @@ export default function Home() {
             <Tr>
               <Th>ID</Th>
               <Th>Name</Th>
-              <Th>Application</Th>
+              <Th>Tutor Role</Th>
+              <Th>Lab Assistant Role</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {/* currently maps all courses in the array, the local storage value is not used */}
+            {/* grabs courses from the database */}
             {CoursesArray.map((course) => (
               <Tr key={course.id}>
                 <Td>{course.course_id}</Td>
                 <Td>{course.name}</Td>
+                {/* tutor apply button */}
                 <Td>
-                  <Button 
-                    variant={isCourseApplied(course.name) ? "solid" : "solid"} 
-                    colorScheme={isCourseApplied(course.name) ? "red" : "green"}
-                    onClick={() => handleApplyToggle(course.name)}
-                    data-testid="tutor-apply-button"
-                  >
-                    {isCourseApplied(course.name) ? "Remove" : "Apply"}
-                  </Button>
+                  <Button onClick={handleTutorApplication}>Apply</Button>
+                </Td>
+                {/* lab assistant apply button */}
+                <Td>
+                  <Button onClick={handleLabAssistantApplication}>Apply</Button>
                 </Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
       </TableContainer>
+
+      <br/>
       <Box p={4} borderWidth="1px" borderRadius="lg">
       <Heading size='2x1'>Your Profile</Heading>
       <HStack>
@@ -171,6 +161,7 @@ export default function Home() {
         <Text> {currentTutor.Creds}</Text>
       </HStack>
       </Box>
+
       <br/>
       <Box p={4} borderWidth="1px" borderRadius="lg">
         <Heading size='2x1'>Update Profile</Heading>
@@ -210,6 +201,7 @@ export default function Home() {
           Update Details
         </Button>
       </Box>
+
     </Layout>
   );
 }
