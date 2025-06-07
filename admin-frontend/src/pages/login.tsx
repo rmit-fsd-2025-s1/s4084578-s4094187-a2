@@ -31,6 +31,7 @@ export default function AdminLogin() {
         />
         <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">Password</FormLabel>
         <Input
+          type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
