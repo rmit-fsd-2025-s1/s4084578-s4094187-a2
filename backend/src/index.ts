@@ -7,9 +7,11 @@ import courseRouter from "./routes/course.routes"
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000'
+}))
 app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/users", userRoutes);

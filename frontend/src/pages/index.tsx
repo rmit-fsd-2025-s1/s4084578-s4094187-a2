@@ -28,7 +28,7 @@ export default function Home() {
 
     if (login && email) {
       setLoginExists(true);
-      fetch(`http://localhost:5000/api/profile?email=${email}`)
+      fetch(`http://localhost:5050/api/profile?email=${email}`)
         .then(res => res.json())
         .then(data => setProfile(data))
         .catch(err => console.error("Failed to fetch profile:", err));

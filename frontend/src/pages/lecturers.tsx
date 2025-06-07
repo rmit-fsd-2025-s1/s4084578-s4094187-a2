@@ -25,7 +25,7 @@ export default function Home() {
 
     const fetchTutors = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+        const response = await fetch(`http://localhost:5050/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
         setTutors(data);
         console.log('Fetched tutor data:', data);
@@ -38,7 +38,7 @@ export default function Home() {
       fetchTutors();
     } else {
       // Fetch all tutors if no search term is provided
-      fetch('http://localhost:5000/api/search')
+      fetch('http://localhost:5050/api/search')
         .then(res => res.json())
         .then(data => {
           setTutors(data);
@@ -68,7 +68,7 @@ export default function Home() {
     const updatedTutor = updatedTutors.find(t => t.name === name);
     if (updatedTutor) {
       try {
-        await fetch(`http://localhost:5000/api/tutors/${updatedTutor.id}`, {
+        await fetch(`http://localhost:5050/api/tutors/${updatedTutor.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedTutor)
@@ -283,7 +283,7 @@ export default function Home() {
 
                   try {
                     console.log('Sending updated tutor:', updatedTutor);
-                    await fetch(`http://localhost:5000/api/tutors/${updatedTutor.id}`, {
+                    await fetch(`http://localhost:5050/api/tutors/${updatedTutor.id}`, {
                       method: 'PUT',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify(updatedTutor),

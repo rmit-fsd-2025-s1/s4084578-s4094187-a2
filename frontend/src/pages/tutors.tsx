@@ -24,7 +24,7 @@ export default function Home() {
   const [CoursesArray, setCoursesArray] = useState<Course[]>([])
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/courses")
+    fetch("http://localhost:5050/api/courses")
     .then((res) => res.json())
     .then((data) => setCoursesArray(data))
     .catch((err) => console.error("Failed to fetch courses:", err))
