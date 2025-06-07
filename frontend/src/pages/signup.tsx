@@ -43,7 +43,8 @@ export default function Home() {
   const [tutorPassword, setTutorPassword] = useState("");
   const [tutorName, setTutorName] = useState("");
   const [availability, setAvailability] = useState(false);
-  const [skills, setSkills] = useState("");
+  const [skillInput, setSkillInput] = useState("");
+  const [skills, setSkills] = useState<string[]>([]);
   const [creds, setCreds] = useState("");
 
   const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
@@ -53,6 +54,20 @@ export default function Home() {
     const hasNumber = /\d/.test(password);
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     return password.length >= 8 && hasLetter && hasNumber && hasSpecial;
+  };
+
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && skillInput.trim()) {
+      e.preventDefault();
+      if (!skills.includes(skillInput.trim())) {
+        setSkills([...skills, skillInput.trim()]);
+      }
+      setSkillInput("");
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    setSkills(skills.filter((s) => s !== skill));
   };
 
   const registerLecturer = async () => {
@@ -104,7 +119,7 @@ export default function Home() {
         password: tutorPassword,
         name: tutorName,
         availableFullTime: availability,
-        skillsList: skills,
+        skillsList: skills.join(","),
         academicCredentials: creds
       })
     });
@@ -121,7 +136,7 @@ export default function Home() {
     <Layout>
       <VStack spacing={6}>
         <Text fontSize="lg">
-          Already have an account? <a href="/login">Click here</a>
+          Already have an account? <a href="/login" className="nav-link">Click here</a>
         </Text>
 
         <HStack spacing={4}>
@@ -174,8 +189,27 @@ export default function Home() {
                 <Input value={tutorName} onChange={(e) => setTutorName(e.target.value)} />
                 <FormLabel mt={3}>Available Full Time</FormLabel>
                 <Switch isChecked={availability} onChange={(e) => setAvailability(e.target.checked)} />
+
                 <FormLabel mt={3}>Skills</FormLabel>
-                <Input value={skills} onChange={(e) => setSkills(e.target.value)} />
+                <Input
+                  placeholder="Type a skill and press Enter"
+                  value={skillInput}
+                  onChange={(e) => setSkillInput(e.target.value)}
+                  onKeyDown={handleSkillKeyDown}
+                />
+                <HStack wrap="wrap" mt={2}>
+                  {skills.map((skill) => (
+                    <Button
+                      key={skill}
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => removeSkill(skill)}
+                    >
+                      {skill} ✕
+                    </Button>
+                  ))}
+                </HStack>
+
                 <FormLabel mt={3}>Academic Credentials</FormLabel>
                 <Select value={creds} onChange={(e) => setCreds(e.target.value)}>
                   <option value="">Select a degree</option>
