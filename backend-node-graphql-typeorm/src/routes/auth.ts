@@ -26,6 +26,10 @@ router.post("/login", async(req, res) => {
         res.status(404).json({ message: "User not found" });
         return;
       }
+      if (tutor.blocked) {
+        res.status(403).json({ message: "This user has been blocked. Please contact the system admin." });
+        return;
+      }
       res.json({...tutor, role: "tutor"});
       return;
     }
