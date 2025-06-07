@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { Button, FormControl, FormLabel, Input } from "@chakra-ui/react";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -18,21 +19,26 @@ export default function AdminLogin() {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <h1>Admin Login</h1>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Login</button>
-    </form>
+    <>
+      <FormControl>
+        <FormLabel fontWeight="bold">Admin Login</FormLabel>
+        <br/>
+        <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">User</FormLabel>
+        <Input
+          placeholder="User"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">Password</FormLabel>
+        <Input
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </FormControl>
+
+      <br/>
+      <Button onClick={handleLogin}>Login</Button>
+    </>
   );
 }
