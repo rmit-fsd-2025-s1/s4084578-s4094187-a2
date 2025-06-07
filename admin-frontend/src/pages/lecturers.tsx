@@ -1,39 +1,66 @@
 import { 
-  Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, 
-  ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr 
+  Box, Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, 
+  ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr 
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Course, courseService, Lecturer, lecturerCourseService, lecturerService } from "@/services/api";
+import { 
+  Course, courseService, Lecturer, lecturerCourseService, 
+  lecturerService, LecturerCourse 
+} from "@/services/api";
 
 export default function Home() {
 
   const [lecturers, setLecturers] = useState<Lecturer[]>([])
-  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(null)
   const [courses, setCourses] = useState<Course[]>([])
+  const [assignedCourses, setAssignedCourses] = useState<LecturerCourse[]>([]) // courses that the selected lecturer is assigned to
 
-
+  // fill useStates
   useEffect(() => {
       lecturerService.getLecturers().then(setLecturers)
       courseService.getCourses().then(setCourses)
     }, []);
 
-  const handleViewCourses = (lecturer: Lecturer) => {
+  // "View Course" button
+  const handleViewCourses = async (lecturer: Lecturer) => {
     setSelectedLecturer(lecturer)
-    setIsEditOpen(true)
+    setIsModalOpen(true)
+    await fetchAssignedCourses(lecturer.id)
   }
 
-  const handleAssignCourse = async (course: Course) => {
-  if (!selectedLecturer) return;
-  try {
-    await lecturerCourseService.assignCourse(selectedLecturer.id, course.id);
-    alert(`Assigned "${course.name}" to ${selectedLecturer.name}`);
-    // optional – refetch lecturerCourses to disable the button
-  } catch (err: any) {
-    alert(err.message ?? "Could not assign – maybe it is already linked?");
-    console.error(err);
+  // assign and unassign lecturers from courses
+  const toggleCourseAssignment = async (course: Course) => {
+    if (!selectedLecturer) return
+    const assigned = isAssigned(course.id);
+    try {
+      // if the lecturer is already assigned, delete the assignment
+      if (assigned) {
+        const lecturerCourseId =
+          assignedCourses.find(lecturerCourse => lecturerCourse.course.id === course.id)?.lecturer_course_id || "";
+        await lecturerCourseService.deleteLecturerCourse(lecturerCourseId);
+      } 
+      // if the lecturer is not already assigned, assign them
+      else {
+        await lecturerCourseService.assignCourse(selectedLecturer.id, course.id);
+      }
+      // update data for buttons to display correctly
+      await fetchAssignedCourses(selectedLecturer.id);
+    } catch (err: any) {
+      alert(err.message ?? "Unable to update lecturer assignment to course.");
+      console.error(err);
+    }
   }
-}
+
+  // logic is used twice, pull out of other code
+  const fetchAssignedCourses = async (lecturerId: string) => {
+    const lecturerCourses = await lecturerCourseService.getCoursesByLecturerId(lecturerId)
+    setAssignedCourses(lecturerCourses)
+  }
+
+  const isAssigned = (courseId: string) => {
+    return assignedCourses.some(lecturerCourse => lecturerCourse.course.id === courseId)
+  }
 
   return (
     <div>
@@ -62,7 +89,7 @@ export default function Home() {
       </Box>
     
       {/* modal for edit button */}
-      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalOverlay/>
         <ModalContent maxW="fit-content">
           <ModalHeader/>
@@ -78,20 +105,31 @@ export default function Home() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {courses.map((course) => (
-                    <Tr key={course.id}>
-                      <Td>{course.name}</Td>
-                      <Td>{course.course_id}</Td>
-                      <Td><Button onClick={() => handleAssignCourse(course)}>Assign Course</Button></Td>
-                    </Tr>
-                  ))}
+                  {/* map all courses, colour and text on button is based on assignment */}
+                  {courses.map(course => {
+                    const assigned = isAssigned(course.id)
+                    return (
+                      <Tr key={course.id}>
+                        <Td>{course.name}</Td>
+                        <Td>{course.course_id}</Td>
+                        <Td>
+                          <Button
+                            colorScheme={assigned ? "red" : "blue"}
+                            onClick={() => toggleCourseAssignment(course)}
+                          >
+                            {assigned ? "Unassign Course" : "Assign Course"}
+                          </Button>
+                        </Td>
+                      </Tr>
+                    )
+                  })}
                 </Tbody>
               </Table>
             </TableContainer>
             {courses.length === 0 && <p>Loading courses. If this is taking more than a couple seconds, please refresh the page.</p>}
           </ModalBody>
           <ModalFooter>
-            <Button onClick={() => setIsEditOpen(false)} mr={3}>Close</Button>
+            <Button onClick={() => setIsModalOpen(false)} mr={3}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

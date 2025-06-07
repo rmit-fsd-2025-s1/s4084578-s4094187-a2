@@ -13,6 +13,18 @@ export interface Lecturer {
   email: string;
 }
 
+export interface LecturerCourse {
+  lecturer_course_id: string;
+  lecturer: {
+    id: string;
+  }
+  course: {
+    id: string;
+    course_id: number;
+    name: string;
+  }
+}
+
 const GET_COURSES = gql`
   query GetCourses {
     courses {
@@ -68,6 +80,28 @@ const ASSIGN_COURSE = gql`
   }
 `
 
+const GET_LECTURER_COURSES = gql`
+  query GetLecturerCourses($lecturerId: ID!) {
+    lecturerCourses(lecturerId: $lecturerId) {
+      lecturer_course_id
+      lecturer {
+        id
+      }
+      course {
+        id
+        course_id
+        name
+      }
+    }
+  }
+`
+
+const UNASSIGN_COURSE = gql`
+  mutation UnassignCourse($lecturerCourseId: ID!) {
+    deleteLecturerCourse(lecturerCourseId: $lecturerCourseId)
+  }
+`
+
 export const courseService = {
   getCourses: async (): Promise<Course[]> => {
     const { data } = await client.query({ query: GET_COURSES, fetchPolicy: "network-only" })
@@ -97,9 +131,28 @@ export const lecturerService ={
 }
 
 export const lecturerCourseService = {
-  assignCourse: (lecturerId: string, courseId: string) =>
-    client.mutate({
+  assignCourse: async (lecturerId: string, courseId: string): Promise<LecturerCourse> => {
+    const { data } = await client.mutate({
       mutation: ASSIGN_COURSE,
-      variables: { lecturerId, courseId },
-    }),
+      variables: { lecturerId, courseId }
+    })
+    return data.assignCourseToLecturer
+  },
+
+  getCoursesByLecturerId: async (lecturerId: string): Promise<LecturerCourse[]> => {
+    const { data } = await client.query({
+      query: GET_LECTURER_COURSES, 
+      variables: {lecturerId},
+      fetchPolicy: "network-only"
+    })
+    return data.lecturerCourses
+  },
+
+  deleteLecturerCourse: async (lecturerCourseId: string): Promise<boolean> => {
+    const { data } = await client.mutate({
+      mutation: UNASSIGN_COURSE,
+      variables: { lecturerCourseId }
+    })
+    return data.deleteLecturerCourse
+  }
 }

@@ -4,7 +4,7 @@ import { Course } from "../entity/Course"
 import { Lecturer_Course } from "../entity/Lecturer_Course"
 
 const courseRepository = AppDataSource.getRepository(Course)
-const lecturerRepostiory = AppDataSource.getRepository(Lecturer)
+const lecturerRepository = AppDataSource.getRepository(Lecturer)
 const lecturerCourseRepository = AppDataSource.getRepository(Lecturer_Course)
 
 export const resolvers = {
@@ -15,7 +15,7 @@ export const resolvers = {
     },
 
     lecturers: async () => {
-      return await lecturerRepostiory.find()
+      return await lecturerRepository.find()
     },
 
     lecturerCourses: async (
@@ -67,12 +67,32 @@ export const resolvers = {
       _: unknown, 
       { lecturerId, courseId }: { lecturerId: string; courseId: string }
     ) => {
+      // find related lecturer and course
       const [lecturer, course] = await Promise.all([
-        lecturerRepostiory.findOneByOrFail({ id: lecturerId }),
+        lecturerRepository.findOneByOrFail({ id: lecturerId }),
         courseRepository.findOneByOrFail({ id: courseId })
-      ]);
+      ])
+      // look for existing row in database
+      let existing = await lecturerCourseRepository.findOne({
+        where: { lecturer: { id: lecturerId }, course: { id: courseId } },
+        relations: { lecturer: true, course: true }
+      })
+      // if the row already exists, return it
+      if (existing) return existing
+      // otherwise, save a new row in the database
       const lecturerCourse = lecturerCourseRepository.create({ lecturer, course })
       return lecturerCourseRepository.save(lecturerCourse)
     },
+
+    deleteLecturerCourse: async (
+      _: unknown,
+      { lecturerCourseId }: { lecturerCourseId: string }
+    ) => {
+      const result = await lecturerCourseRepository.delete({ lecturer_course_id: lecturerCourseId })
+      if (!result.affected) {
+        throw new Error(`Lecturer_Course row ${lecturerCourseId} not found`)
+      }
+      return true
+    }
   },
 }

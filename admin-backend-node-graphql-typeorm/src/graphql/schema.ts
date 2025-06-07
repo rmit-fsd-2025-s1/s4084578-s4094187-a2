@@ -52,5 +52,6 @@ export const typeDefs = gql`
     updateCourse(id: ID!, course_id: Int, name: String): Course!
     deleteCourse(id: ID!): Boolean!
     assignCourseToLecturer(lecturerId: ID!, courseId: ID!): Lecturer_Course!
+    deleteLecturerCourse(lecturerCourseId: ID!): Boolean!
   }
 `
