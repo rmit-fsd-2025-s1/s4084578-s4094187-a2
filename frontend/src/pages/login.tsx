@@ -27,7 +27,6 @@ export default function Home() {
     <Layout>
       <div>
         <main>
-          {/*Email and password stored temporarily as typed*/}
           <FormControl isRequired isInvalid={invalidEmail}>
             <FormLabel>Email address</FormLabel>
               <Input placeholder="Type your email" type='email' 

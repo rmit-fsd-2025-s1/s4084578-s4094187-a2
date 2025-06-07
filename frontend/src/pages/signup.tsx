@@ -18,7 +18,9 @@ import {
   HStack,
   Text,
   Select,
-  useToast
+  useToast,
+  FormErrorMessage,
+  FormHelperText
 } from "@chakra-ui/react";
 
 export default function Home() {
@@ -48,14 +50,17 @@ export default function Home() {
   const [skills, setSkills] = useState<string[]>([]);
   const [creds, setCreds] = useState("");
   const toast = useToast();
-  const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
 
+  const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
   const isValidPassword = (password: string) => {
     const hasLetter = /[A-Za-z]/.test(password);
     const hasNumber = /\d/.test(password);
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
     return password.length >= 8 && hasLetter && hasNumber && hasSpecial;
   };
+  const isValidName = (name: string) => name.trim().length > 0;
+  const hasSkills = skills.length > 0;
+  const hasCreds = creds !== "";
 
   const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && skillInput.trim()) {
@@ -219,13 +224,44 @@ export default function Home() {
             <ModalHeader>Lecturer Signup</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <FormControl>
+              <FormControl isRequired isInvalid={!isValidEmail(lecturerEmail)}>
                 <FormLabel>Email</FormLabel>
-                <Input value={lecturerEmail} onChange={(e) => setLecturerEmail(e.target.value)} />
+                <Input placeholder="Type your email" value={lecturerEmail} onChange={(e) => setLecturerEmail(e.target.value)} />
+                {!isValidEmail(lecturerEmail) ? (
+                  <FormErrorMessage>
+                    Valid email is required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter email.
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={!isValidPassword(lecturerPassword)}>
                 <FormLabel mt={3}>Password</FormLabel>
-                <Input type="password" value={lecturerPassword} onChange={(e) => setLecturerPassword(e.target.value)} />
+                <Input placeholder="Type your password" type="password" value={lecturerPassword} onChange={(e) => setLecturerPassword(e.target.value)} />
+                {!isValidPassword(lecturerPassword) ? (
+                  <FormErrorMessage>
+                    Valid password is required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter password.
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={!isValidName(lecturerName)}>
                 <FormLabel mt={3}>Full Name</FormLabel>
-                <Input value={lecturerName} onChange={(e) => setLecturerName(e.target.value)} />
+                <Input placeholder="Type your full name" value={lecturerName} onChange={(e) => setLecturerName(e.target.value)} />
+                {!isValidName(lecturerName) ? (
+                  <FormErrorMessage>
+                    Full name is required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter full name.
+                  </FormHelperText>
+                )}
               </FormControl>
             </ModalBody>
             <ModalFooter>
@@ -244,16 +280,50 @@ export default function Home() {
             <ModalHeader>Tutor Signup</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <FormControl>
+              <FormControl isRequired isInvalid={!isValidEmail(lecturerEmail)}>
                 <FormLabel>Email</FormLabel>
-                <Input value={tutorEmail} onChange={(e) => setTutorEmail(e.target.value)} />
+                <Input placeholder="Type your email" value={tutorEmail} onChange={(e) => setTutorEmail(e.target.value)} />
+                {!isValidEmail(lecturerEmail) ? (
+                  <FormErrorMessage>
+                    Valid email is required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter email.
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={!isValidPassword(lecturerPassword)}>
                 <FormLabel mt={3}>Password</FormLabel>
-                <Input type="password" value={tutorPassword} onChange={(e) => setTutorPassword(e.target.value)} />
+                <Input placeholder="Type your password" type="password" value={tutorPassword} onChange={(e) => setTutorPassword(e.target.value)} />
+                {!isValidPassword(lecturerPassword) ? (
+                  <FormErrorMessage>
+                    Valid password is required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter password.
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={!isValidName(tutorName)}>
                 <FormLabel mt={3}>Full Name</FormLabel>
-                <Input value={tutorName} onChange={(e) => setTutorName(e.target.value)} />
+                <Input placeholder="Type your full name" value={tutorName} onChange={(e) => setTutorName(e.target.value)} />
+                {!isValidName(tutorName) ? (
+                  <FormErrorMessage>
+                    Full name is required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter full name.
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl isRequired>
                 <FormLabel mt={3}>Available Full Time</FormLabel>
                 <Switch isChecked={availability} onChange={(e) => setAvailability(e.target.checked)} />
-
+              </FormControl>
+              <FormControl isRequired isInvalid={!hasSkills}>
                 <FormLabel mt={3}>Skills</FormLabel>
                 <Input
                   placeholder="Type a skill and press Enter"
@@ -273,7 +343,17 @@ export default function Home() {
                     </Button>
                   ))}
                 </HStack>
-
+                {!hasSkills ? (
+                  <FormErrorMessage>
+                    Skills are required.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Enter skills.
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl isRequired isInvalid={!hasCreds}>
                 <FormLabel mt={3}>Academic Credentials</FormLabel>
                 <Select value={creds} onChange={(e) => setCreds(e.target.value)}>
                   <option value="">Select a degree</option>
@@ -281,6 +361,15 @@ export default function Home() {
                   <option value="Software Engineering">Software Engineering</option>
                   <option value="Information Technology">Information Technology</option>
                 </Select>
+                {!hasCreds ? (
+                  <FormErrorMessage>
+                    Select valid credentials.
+                  </FormErrorMessage>
+                ):(
+                  <FormHelperText>
+                    Select credentials.
+                  </FormHelperText>
+                )}
               </FormControl>
             </ModalBody>
             <ModalFooter>
