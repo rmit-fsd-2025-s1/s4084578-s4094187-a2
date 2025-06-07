@@ -42,6 +42,7 @@ export const typeDefs = gql`
 
   type Query { 
     courses: [Course!]!
+    lecturers: [Lecturer!]!
   }
 
   type Mutation {

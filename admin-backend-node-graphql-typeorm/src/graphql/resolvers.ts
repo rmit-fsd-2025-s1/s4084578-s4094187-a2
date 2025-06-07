@@ -1,13 +1,19 @@
+import { Lecturer } from "../entity/Lecturer"
 import { AppDataSource } from "../data-source"
 import { Course } from "../entity/Course"
 
 const courseRepository = AppDataSource.getRepository(Course)
+const lecturerRepostiory = AppDataSource.getRepository(Lecturer)
 
 export const resolvers = {
 
   Query: {
     courses: async () => {
       return await courseRepository.find()
+    },
+
+    lecturers: async () => {
+      return await lecturerRepostiory.find()
     }
   },
 
