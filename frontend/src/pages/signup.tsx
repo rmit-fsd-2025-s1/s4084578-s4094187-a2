@@ -16,7 +16,8 @@ import {
   ModalFooter,
   VStack,
   HStack,
-  Text
+  Text,
+  Select
 } from "@chakra-ui/react";
 
 export default function Home() {
@@ -45,7 +46,24 @@ export default function Home() {
   const [skills, setSkills] = useState("");
   const [creds, setCreds] = useState("");
 
+  const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
+
+  const isValidPassword = (password: string) => {
+    const hasLetter = /[A-Za-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return password.length >= 8 && hasLetter && hasNumber && hasSpecial;
+  };
+
   const registerLecturer = async () => {
+    if (!isValidEmail(lecturerEmail)) {
+      alert("Email must be an @rmit.edu.au address");
+      return;
+    }
+    if (!isValidPassword(lecturerPassword)) {
+      alert("Password must be at least 8 characters long and include letters, numbers, and special characters");
+      return;
+    }
     const res = await fetch("http://localhost:5050/api/register/lecturer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -65,6 +83,19 @@ export default function Home() {
   };
 
   const registerTutor = async () => {
+    if (!isValidEmail(tutorEmail)) {
+      alert("Email must be an @rmit.edu.au address");
+      return;
+    }
+    if (!isValidPassword(tutorPassword)) {
+      alert("Password must be at least 8 characters long and include letters, numbers, and special characters");
+      return;
+    }
+
+    if (!creds) {
+      alert("Please select an academic credential");
+      return;
+    }
     const res = await fetch("http://localhost:5050/api/register/tutor", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -146,11 +177,16 @@ export default function Home() {
                 <FormLabel mt={3}>Skills</FormLabel>
                 <Input value={skills} onChange={(e) => setSkills(e.target.value)} />
                 <FormLabel mt={3}>Academic Credentials</FormLabel>
-                <Input value={creds} onChange={(e) => setCreds(e.target.value)} />
+                <Select value={creds} onChange={(e) => setCreds(e.target.value)}>
+                  <option value="">Select a degree</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Software Engineering">Software Engineering</option>
+                  <option value="Information Technology">Information Technology</option>
+                </Select>
               </FormControl>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="green" mr={3} onClick={registerTutor}>
+              <Button colorScheme="blue" mr={3} onClick={registerTutor}>
                 Register
               </Button>
               <Button onClick={onTutorClose}>Cancel</Button>

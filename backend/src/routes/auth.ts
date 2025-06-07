@@ -7,6 +7,14 @@ const router = express.Router();
 const tutorRepo = AppDataSource.getRepository(Tutor);
 const lecturerRepo = AppDataSource.getRepository(Lecturer);
 
+const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
+const isValidPassword = (password: string) => {
+  const hasLetter = /[A-Za-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  return password.length >= 8 && hasLetter && hasNumber && hasSpecial;
+};
+
 router.post("/login", async(req, res) => {
   const { email, password } = req.body;
 
@@ -39,9 +47,14 @@ router.post('/register/lecturer', async (req, res) => {
     return;
   }
 
+  if (!isValidEmail(email) || !isValidPassword(password)) {
+    res.status(400).json({ error: "Invalid email or password format" });
+    return;
+  }
+
   try {
     await lecturerRepo.query(
-      'INSERT INTO lecturers (email, password, name) VALUES (?, ?, ?)',
+      'INSERT INTO lecturer (email, password, name) VALUES (?, ?, ?)',
       [email, password, name]
     );
 
@@ -68,10 +81,15 @@ router.post('/register/tutor', async (req, res) => {
     return;
   }
 
+  if (!isValidEmail(email) || !isValidPassword(password)) {
+    res.status(400).json({ error: "Invalid email or password format" });
+    return;
+  }
+
   try {
 
     await tutorRepo.query(
-      `INSERT INTO tutors
+      `INSERT INTO tutor
         (email, password, name, availableFullTime, skillsList, academicCredentials, comments, timesSelected, blocked)
        VALUES (?, ?, ?, ?, ?, ?, ?, 0, false)`,
       [
