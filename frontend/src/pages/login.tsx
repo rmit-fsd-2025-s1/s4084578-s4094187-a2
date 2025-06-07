@@ -7,6 +7,7 @@ import {
   useToast,
   Button
 } from '@chakra-ui/react';
+import Link from "next/link";
 import { useState} from "react";
 import Layout from "../components/Layout";
 import React from "react";
@@ -67,15 +68,9 @@ export default function Home() {
             Log In!
           </Button>
           <br/>
-          <Button
-            as="a"
-            href="/signup"
-            variant="link"
-            colorScheme="blue"
-            data-testid="signup-link"
-          >
+          <Link href="/signup" className="nav-link">
             Don't have an account? Sign up here.
-          </Button>
+          </Link>
         </main>
       </div>
     </Layout>

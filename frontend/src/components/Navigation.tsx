@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 
 const Navigation = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const login = localStorage.getItem("login");

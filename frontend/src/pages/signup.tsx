@@ -1,5 +1,6 @@
 import Layout from "../components/Layout";
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   Button,
   FormControl,
@@ -205,7 +206,7 @@ export default function Home() {
     <Layout>
       <VStack spacing={6}>
         <Text fontSize="lg">
-          Already have an account? <a href="/login" className="nav-link">Click here</a>
+          Already have an account? <Link href="/login" className="nav-link">Click here</Link>
         </Text>
 
         <HStack spacing={4}>
