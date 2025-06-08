@@ -10,11 +10,14 @@ import {
 
 export default function Home() {
 
+  // all lecturers
   const [lecturers, setLecturers] = useState<Lecturer[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  // a specific lecturer
   const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(null)
   const [courses, setCourses] = useState<Course[]>([])
-  const [assignedCourses, setAssignedCourses] = useState<LecturerCourse[]>([]) // courses that the selected lecturer is assigned to
+  // courses that each a specific lecturer is assigned to
+  const [assignedCourses, setAssignedCourses] = useState<LecturerCourse[]>([])
 
   // fill useStates
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function Home() {
     }
   }
 
-  // logic is used twice, pull out of other code
+  // the following logic is used twice, pull both functions of the other code
   const fetchAssignedCourses = async (lecturerId: number) => {
     const lecturerCourses = await lecturerCourseService.getCoursesByLecturerId(lecturerId)
     setAssignedCourses(lecturerCourses)

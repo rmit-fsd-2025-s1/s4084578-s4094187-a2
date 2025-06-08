@@ -8,21 +8,20 @@ import { Course, courseService } from "@/services/api";
 export default function Home() {
 
   const [courses, setCourses] = useState<Course[]>([])
-  const [formData, setFormData] = useState<Course>({
-    id: -1,
-    course_id: "",
-    name: ""
-  });
-
-  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [formData, setFormData] = useState<Course>({ id: -1, course_id: "", name: "" })
+  // useState to handle showing the modal (edit course window)
+  const [isModalOpen, setisModalOpen] = useState(false)
+  // set a specific course to edit
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
   const [editName, setEditName] = useState("")
   const [editCourseId, setEditCourseId] = useState<string>("");
 
+  // load all courses on page load
   useEffect(() => {
     courseService.getCourses().then(setCourses)
   }, []);
 
+  // function for adding a course
   const handleSubmit = async () => {
     if (!formData.name.trim() || formData.name.trim().length > 100) {
       alert("Please enter a valid course name.")
@@ -36,20 +35,23 @@ export default function Home() {
       await courseService.createCourse(formData.course_id.trim(), formData.name.trim());
       const updatedCourses = await courseService.getCourses()
       setCourses(updatedCourses)
+      // id defaults to -1 (it is never used, an id of -1 in the database will reveal the existance of a problem)
       setFormData({ id: -1, course_id: "", name: "" })
-    } 
+    }
     catch (error) {
       console.error("Error creating course:", error)
     }
   };
 
+  // saves values of the specific course and opens modal window
   const handleEdit = (course: Course) => {
     setSelectedCourse(course)
     setEditName(course.name)
     setEditCourseId(course.course_id)
-    setIsEditOpen(true)
+    setisModalOpen(true)
   };
 
+  // saves the edit
   const handleSaveEdit = async () => {
     if (!selectedCourse) return
     if (!editName.trim() || editName.trim().length > 100) {
@@ -62,7 +64,7 @@ export default function Home() {
     }
     try {
       await courseService.updateCourse(selectedCourse.id, editCourseId.trim(), editName.trim());
-      setIsEditOpen(false)
+      setisModalOpen(false)
       const updatedCourses = await courseService.getCourses()
       setCourses(updatedCourses)
     } 
@@ -71,6 +73,7 @@ export default function Home() {
     }
   };
 
+  // function for deleting a course
   const handleDelete = async (course: Course) => {
     const confirmed = window.confirm(`Are you sure you want to delete "${course.name}"?`);
     if (!confirmed) return;
@@ -84,6 +87,7 @@ export default function Home() {
     }
   }
 
+  // logic used in two places, pull out of bigger code blocks
   const isValidCourseId = (input: string) => /^COSC\d{4}$/.test(input.trim())
 
   return (
@@ -137,7 +141,7 @@ export default function Home() {
       </Box>
       
       {/* modal for edit button */}
-      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
+      <Modal isOpen={isModalOpen} onClose={() => setisModalOpen(false)}>
         <ModalOverlay/>
         <ModalContent>
           <ModalHeader>Edit Course</ModalHeader>
@@ -153,7 +157,7 @@ export default function Home() {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={() => setIsEditOpen(false)} mr={3}>Cancel</Button>
+            <Button onClick={() => setisModalOpen(false)} mr={3}>Cancel</Button>
             <Button colorScheme="blue" onClick={handleSaveEdit}>Save</Button>
           </ModalFooter>
         </ModalContent>

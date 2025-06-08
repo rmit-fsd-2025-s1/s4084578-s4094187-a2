@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
 
+  // state holds all tutors and whether they are blocked
   const [tutors, setTutors] = useState<Tutor[]>([])
 
+  // load tutors on page load
   useEffect(() => {
     tutorService.getTutors().then(setTutors)
   }, [])
 
+  // single function to both block and unblock users, value to put in the database gets flipped here
   const handleToggleBlock = async (tutorId: number, currentlyBlocked: boolean) => {
     try {
       // pass !currentlyBlocked to pass the opposite value, switching it

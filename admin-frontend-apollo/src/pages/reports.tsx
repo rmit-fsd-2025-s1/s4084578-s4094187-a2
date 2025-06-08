@@ -4,10 +4,12 @@ import { Box } from "@chakra-ui/react";
 
 export default function Home() {
 
+  // state to hold values required for reports
   const [coursesAndSelectedTutors, setCoursesAndSelectedTutors] = useState<CourseWithSelectedTutors[]>([])
   const [candidateMoreThan3, setCandidateMoreThan3] = useState<Tutor[]>([])
   const [unselected, setUnselected] = useState<Tutor[]>([])
 
+  // useEffect to load values into state on page load
   useEffect(() => {
     tutorApplicationService.getCoursesWithSelectedTutorApplications().then(setCoursesAndSelectedTutors)
     tutorService.getTutorsWithSelections(3).then(setCandidateMoreThan3)

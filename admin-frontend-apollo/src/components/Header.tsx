@@ -13,6 +13,7 @@ function NavBarLogout(props: {label:string}) {
     onClick={(
     ) => {
       router.push(("/login"))
+      // remove validation key upon logout
       localStorage.setItem("isAdmin", "false")
     }
   }> {props.label} </button>
@@ -26,6 +27,7 @@ const Header = () => {
       <NavBarButton label='Course Management' page='/courses'/>
       <NavBarButton label='Lecturer Management' page='/lecturers'/>
       <NavBarButton label='Reports' page='/reports'/>
+      {/* differnt component */}
       <NavBarLogout label='Logout'/>
     </div>
   );

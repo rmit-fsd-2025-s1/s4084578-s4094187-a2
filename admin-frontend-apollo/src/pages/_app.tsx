@@ -16,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <ChakraProvider>
+        {/* messy ternary operator ensures someone without a valid admin login cannot access any page */}
         {isLoginPage ? (
           <div className = 'layout'>
               <Header/>
