@@ -21,6 +21,12 @@ export default function Home() {
     course?: string;
   };
 
+  type Course = { 
+    id: number;
+    course_id: string;
+    name: string;
+  }
+
   const flattenTutorsByCourse = (tutors: Tutor[]) => {
     const flatList: Tutor[] = [];
     tutors.forEach(tutor => {
@@ -47,7 +53,7 @@ export default function Home() {
       const response = await fetch(`http://localhost:5050/api/lecCourses?lecturerId=${localStorage.ID}`);
       const courses = await response.json();
       console.log('Courses fetched for lecturer:', courses);
-      setAllowedCourses(courses.map((course: any) => course.name));
+      setAllowedCourses(courses.map((course: Course) => course.name));
     } catch (error) {
       console.error("Error fetching lecturer courses:", error);
     }
