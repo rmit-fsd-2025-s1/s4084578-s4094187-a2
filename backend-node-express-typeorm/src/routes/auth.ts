@@ -226,4 +226,35 @@ router.put('/tutors/:id', async (req, res) => {
   }
 });
 
+router.get("/tutor-applications", async (req, res) => {
+  try {
+    const applications = await AppDataSource
+      .getRepository("tutor_application")
+      .createQueryBuilder("app")
+      .leftJoinAndSelect("app.tutor", "tutor")
+      .leftJoinAndSelect("app.course", "course")
+      .select([
+        "app.id",
+        "app.selected",
+        "app.tutorRole",
+        "tutor.id",
+        "tutor.name",
+        "tutor.email",
+        "tutor.skillsList",
+        "tutor.academicCredentials",
+        "tutor.availableFullTime",
+        "tutor.timesSelected",
+        "tutor.blocked",
+        "course.course_id",
+        "course.name"
+      ])
+      .getMany();
+
+    res.json(applications);
+  } catch (error) {
+    console.error("Error fetching tutor applications:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;

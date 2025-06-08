@@ -17,6 +17,8 @@ export default function Home() {
     timesSelected: number;
     blocked: boolean;
     comments?: string;
+    courses?: string;
+    course?: string;
   };
 
   const [tutors, setTutors] = useState<Tutor[]>([]); //Hold tutor data
@@ -38,8 +40,22 @@ export default function Home() {
     const fetchTutors = async () => {
       try {
         const response = await fetch(`http://localhost:5050/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
+
+        const flattenTutorsByCourse = (tutors: Tutor[]) => {
+          const flatList: Tutor[] = [];
+          tutors.forEach(tutor => {
+            const courseList = tutor.courses?.split(',').map(c => c.trim()) || [''];
+            courseList.forEach(course => {
+              flatList.push({ ...tutor, course });
+            });
+          });
+          return flatList;
+        };
+
         const data = await response.json();
-        setTutors(data);
+        const flatData = flattenTutorsByCourse(data);
+        setTutors(flatData);
+
 
         const initialComments: { [id: number]: string } = {};
         data.forEach((t: Tutor) => {
@@ -158,9 +174,9 @@ export default function Home() {
               <Th onClick={() => handleSort('academicCredentials')} cursor="pointer">
                 Credentials {sortColumn === 'academicCredentials' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
-              {/*<Th onClick={() => handleSort('Courses')} cursor="pointer">
+              <Th onClick={() => handleSort('Courses')} cursor="pointer">
                 Courses {sortColumn === 'Courses' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
-              </Th>*/}
+              </Th>
               <Th onClick={() => handleSort('availableFullTime')} cursor="pointer">
                 Availability {sortColumn === 'availableFullTime' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
@@ -180,11 +196,7 @@ export default function Home() {
                   ))}
                 </Td>
                 <Td>{tutor.academicCredentials}</Td>
-                {/*<Td>
-                  {tutor.courses.split(',').map((course: string, idx: number) => (
-                    <div key={idx}>{course.trim()}</div>
-                  ))}
-                </Td>*/}
+                <Td>{tutor.course || 'N/A'}</Td>
                 <Td>
                   {tutor.availableFullTime ? "Full-time" : "Part-time"}
                 </Td>
