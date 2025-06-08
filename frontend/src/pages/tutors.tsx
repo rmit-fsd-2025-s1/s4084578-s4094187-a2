@@ -1,9 +1,6 @@
 import Layout from "../components/Layout";
 import React, { useEffect, useState } from "react";
-import { 
-  TableContainer, Table, Thead, Tr, Th, Tbody, Td, Button, Box, Heading,
-  FormControl, FormLabel, Input, Stack, RadioGroup, Radio, Text, HStack 
-} from "@chakra-ui/react";
+import { TableContainer, Table, Thead, Tr, Th, Tbody, Td, Button, Box, Heading, Text, HStack } from "@chakra-ui/react";
 
 interface Course {
   id: string;
@@ -185,46 +182,6 @@ export default function Home() {
         <Text as='b'>Academic Credentials:</Text>
         <Text> {currentTutor.Creds}</Text>
       </HStack>
-      </Box>
-
-      <br/>
-      <Box p={4} borderWidth="1px" borderRadius="lg">
-        <Heading size='2x1'>Update Profile</Heading>
-        <FormControl>
-          <FormLabel>Name</FormLabel>
-          <Input 
-            placeholder='Name' 
-            value={formData.Name} 
-            onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
-            data-testid="tutor-update-name"
-          />
-          <FormLabel>Availability</FormLabel>
-          <RadioGroup
-            value={formData.Available}
-            onChange={(value) => setFormData({ ...formData, Available: value as "Full Time" | "Part Time" })}
-          >
-            <Stack direction="row">
-              <Radio value="Full Time" key="full">Full Time</Radio>
-              <Radio value="Part Time" key="part">Part Time</Radio>
-            </Stack>
-          </RadioGroup>
-          <FormLabel>Skills List</FormLabel>
-          <Input 
-            placeholder='Skills List' 
-            value={formData.Skills} 
-            onChange={(e) => setFormData({ ...formData, Skills: e.target.value })}
-          />
-          <FormLabel>Academic Credentials</FormLabel>
-          <Input 
-            placeholder='Academic Credentials' 
-            value={formData.Creds} 
-            onChange={(e) => setFormData({ ...formData, Creds: e.target.value })}
-          />
-        </FormControl>
-        <br/>
-        <Button onClick={updateTutorDetails} data-testid="tutor-update-button">
-          Update Details
-        </Button>
       </Box>
 
     </Layout>
