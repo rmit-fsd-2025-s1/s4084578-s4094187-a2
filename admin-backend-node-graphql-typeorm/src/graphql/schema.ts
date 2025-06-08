@@ -50,6 +50,7 @@ export const typeDefs = gql`
     lecturers: [Lecturer!]!
     tutors: [Tutor!]!
     lecturerCourses(lecturerId: ID!): [Lecturer_Course!]!
+    tutorsWithMinApplications(min: Int = 3): [Tutor!]!
   }
 
   type Mutation {

@@ -50,6 +50,11 @@
   cursor: pointer;
 }
 
+h1 {
+  font-size: 30px;
+  margin-bottom: 1em;
+}
+
 h2 {
-  font-size: 17px;
+  font-size: 18px;
 }

@@ -10,8 +10,8 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Selected Tutor Applications Report</h1>
+    <div>
+      <h1>Selected Candidates by Course</h1>
       
       {coursesAndSelectedTutors.length === 0 ? (
         <p>No selected tutor applications found.</p>
