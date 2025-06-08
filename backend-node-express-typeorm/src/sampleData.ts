@@ -94,16 +94,31 @@ export const sampleTutorApplications = [
   { selected: false, tutorRole: false, tutor: 1, courseID: 2 },
   { selected: false, tutorRole: true, tutor: 1, courseID: 3 },
   { selected: false, tutorRole: true, tutor: 1, courseID: 4 },
+  { selected: false, tutorRole: true, tutor: 2, courseID: 1 },
+  { selected: true, tutorRole: true, tutor: 2, courseID: 2 },
+  { selected: true, tutorRole: true, tutor: 3, courseID: 2 },
+  { selected: false, tutorRole: true, tutor: 3, courseID: 3 },
+  { selected: true, tutorRole: false, tutor: 4, courseID: 1 },
+  { selected: false, tutorRole: true, tutor: 4, courseID: 2 },
+  { selected: false, tutorRole: true, tutor: 4, courseID: 3 },
+  { selected: false, tutorRole: false, tutor: 5, courseID: 1 },
+  { selected: true, tutorRole: true, tutor: 5, courseID: 3 },
   { selected: false, tutorRole: false, tutor: 6, courseID: 1 },
   { selected: false, tutorRole: false, tutor: 6, courseID: 2 },
   { selected: false, tutorRole: true, tutor: 6, courseID: 3 },
-  { selected: false, tutorRole: true, tutor: 6, courseID: 4 },
-  { selected: false, tutorRole: true, tutor: 2, courseID: 1 }
+  { selected: true, tutorRole: true, tutor: 6, courseID: 4 }
 ];
 
 export const sampleLecturerCourses = [
   { lecturerId: 1, courseId: 2 },
   { lecturerId: 2, courseId: 1 },
   { lecturerId: 3, courseId: 4 },
-  { lecturerId: 4, courseId: 3 }
+  { lecturerId: 4, courseId: 3 },
+  { lecturerId: 1, courseId: 1 }, 
+  { lecturerId: 1, courseId: 3 }, 
+  { lecturerId: 2, courseId: 2 }, 
+  { lecturerId: 3, courseId: 3 },
+  { lecturerId: 4, courseId: 4 },
+  { lecturerId: 5, courseId: 1 }, 
+  { lecturerId: 5, courseId: 2 }
 ];
