@@ -24,12 +24,16 @@ export default function Home() {
   }, []);
 
   const handleSubmit = async () => {
-    if (!formData.name.trim() || !formData.course_id.trim()) {
-      alert("Please enter a valid course name and ID.")
+    if (!formData.name.trim() || formData.name.trim().length > 100) {
+      alert("Please enter a valid course name.")
+      return
+    }
+    if (!isValidCourseId(formData.course_id)) {
+      alert("ID must be in the format COSCxxxx where x is a digit.")
       return
     }
     try {
-      await courseService.createCourse(formData.course_id, formData.name);
+      await courseService.createCourse(formData.course_id.trim(), formData.name.trim());
       const updatedCourses = await courseService.getCourses()
       setCourses(updatedCourses)
       setFormData({ id: -1, course_id: "", name: "" })
@@ -48,8 +52,16 @@ export default function Home() {
 
   const handleSaveEdit = async () => {
     if (!selectedCourse) return
+    if (!editName.trim() || editName.trim().length > 100) {
+      alert("Please enter a valid course name.")
+      return
+    }
+    if (!isValidCourseId(editCourseId)) {
+      alert("ID must be in the format COSCxxxx where x is a digit.")
+      return
+    }
     try {
-      await courseService.updateCourse(selectedCourse.id, editCourseId, editName);
+      await courseService.updateCourse(selectedCourse.id, editCourseId.trim(), editName.trim());
       setIsEditOpen(false)
       const updatedCourses = await courseService.getCourses()
       setCourses(updatedCourses)
@@ -72,6 +84,8 @@ export default function Home() {
     }
   }
 
+  const isValidCourseId = (input: string) => /^COSC\d{4}$/.test(input.trim())
+
   return (
     <>
       <Box className="box">
@@ -87,7 +101,7 @@ export default function Home() {
           <Input
             type="string"
             value={formData.course_id}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, course_id: e.target.value })}
           />
         </FormControl>
         <br/>
