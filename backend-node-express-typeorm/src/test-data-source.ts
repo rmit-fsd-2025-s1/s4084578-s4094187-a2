@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import { Tutor } from './entity/Tutor';
 import { Lecturer } from './entity/Lecturer';
@@ -9,6 +8,7 @@ import { Lecturer_Course } from './entity/Lecturer_Course';
 export const TestDataSource = new DataSource({
   type: 'sqlite',
   database: ':memory:',
+  dropSchema: true,
   synchronize: true,
   entities: [Tutor, Lecturer, Course, Tutor_Application, Lecturer_Course],
   logging: false,

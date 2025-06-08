@@ -1,10 +1,10 @@
 import { Request, Response } from "express"
-import { AppDataSource } from "../data-source"
 import { Tutor } from "../entity/Tutor"
+import { getDataSource } from "../utils/getDataSource"
 
 export class TutorController {
 
-  private tutorRepository = AppDataSource.getRepository(Tutor)
+  tutorRepository = getDataSource().getRepository(Tutor)
 
   // retrive tutor details using email
   async getByEmail(request: Request, response: Response) {
