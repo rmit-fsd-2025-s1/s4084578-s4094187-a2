@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
-import { AppDataSource } from "../data-source";
 import { Course } from "../entity/Course";
+import { getDataSource } from "../utils/getDataSource";
 
 export class CourseController {
-  private courseRepository = AppDataSource.getRepository(Course);
+  courseRepository = getDataSource().getRepository(Course)
 
   // retrive all courses
   async getAll(_: Request, response: Response) {
     const courses = await this.courseRepository.find();
+    if (courses.length === 0) {
+      return response.status(200).json({ message: "No courses found in the database", courses: [] })
+    }
     return response.json(courses);
   }
 }
