@@ -43,9 +43,11 @@ export const resolvers = {
       const tutorsWithMinSelections = await tutorApplicationRepository
         .createQueryBuilder("currentTutorApplication")
         .leftJoin("currentTutorApplication.tutor", "tutor")
+        .leftJoin("currentTutorApplication.course", "course")
+        .where("currentTutorApplication.selected = :selected", { selected: true })
         .select("tutor.id", "tutorId")
         .groupBy("tutor.id")
-        .having("COUNT(currentTutorApplication.id) >= :min", { min })
+        .having("COUNT(DISTINCT course.id) >= :min", { min })
         .getRawMany<{ tutorId: number }>();
 
       const tutorIds = tutorsWithMinSelections.map(row => row.tutorId);
