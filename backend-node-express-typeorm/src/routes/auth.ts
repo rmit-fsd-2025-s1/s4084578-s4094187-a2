@@ -2,10 +2,12 @@ import express from "express";
 import { AppDataSource } from "../data-source";
 import { Tutor } from "../entity/Tutor";
 import { Lecturer } from "../entity/Lecturer";
+import { Lecturer_Course } from "../entity/Lecturer_Course";
 
 const router = express.Router();
 const tutorRepo = AppDataSource.getRepository(Tutor);
 const lecturerRepo = AppDataSource.getRepository(Lecturer);
+const lecCourseRepo = AppDataSource.getRepository(Lecturer_Course);
 
 const isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
 const isValidPassword = (password: string) => {
@@ -211,8 +213,15 @@ router.get("/search", async (req, res) => {
   }
 });
 
-
-
+router.get("/lecCourses", async (req, res) => {
+  try {
+    const lecCourses = await lecCourseRepo.find();
+    res.json(lecCourses);
+  } catch (err) {
+    console.error("Failed to fetch lecturer courses", err);
+    res.status(500).json({ error: "Failed to fetch lecturer courses" });
+  }
+});
 
 router.put('/tutors/:id', async (req, res) => {
   const tutorId = parseInt(req.params.id);

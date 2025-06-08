@@ -32,6 +32,16 @@ export default function Home() {
     return flatList;
   };
 
+  const getUniqueTutors = (tutors: Tutor[]) => {
+    const map = new Map<number, Tutor>();
+    tutors.forEach(t => {
+      if (!map.has(t.id)) {
+        map.set(t.id, t);
+      }
+    });
+    return Array.from(map.values());
+  };
+
   const [tutors, setTutors] = useState<Tutor[]>([]); //Hold tutor data
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal control
   const [rankings, setRankings] = useState<{ [tutorId: number]: number }>({});
@@ -40,6 +50,7 @@ export default function Home() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); //Choose if sorting is ascending or descending
   const [searchTerm, setSearchTerm] = useState(''); //Search bar input
   const [lecturerLoginExists, setLecturerLoginExists] = useState(false); //Check if user has lecturer permissions
+  const [allowedCourses, setAllowedCourses] = useState<string[]>([]);
 
   useEffect(() => {
     // setup login validation
@@ -66,6 +77,16 @@ export default function Home() {
         console.log('Fetched tutor data:', data);
       } catch (error) {
         console.error('Error fetching tutors:', error);
+      }
+    };
+
+    const fetchLecturerCourses = async () => {
+      try {
+        const response = await fetch(`http://localhost:5050/api/lecCourses?lecturerId=${localStorage.ID}`);
+        const courses = await response.json();
+        setAllowedCourses(courses.map((course: any) => course.name));
+      } catch (error) {
+        console.error("Error fetching lecturer courses:", error);
       }
     };
 
@@ -185,7 +206,9 @@ export default function Home() {
           </Thead>
           <Tbody>
             {/*Iterate through tutors*/}
-            {sortedTutors.map((tutor, i) => (
+            {sortedTutors
+              .filter(tutor => allowedCourses.includes(tutor.course || ''))
+              .map((tutor, i) => (
               <Tr key={i}>
               <Td><Checkbox isChecked={tutor.Selected} 
                             onChange={() => handleCheckboxChange(tutor.name)} 
@@ -365,8 +388,9 @@ export default function Home() {
           <Box p={4} borderWidth="1px" borderRadius="lg">
             <Text fontWeight="bold" mb={2}>Most Selected</Text>
             {(() => {
-              const maxSelected = Math.max(...tutors.map(t => t.timesSelected || 0));
-              const mostSelected = tutors.filter(t => (t.timesSelected || 0) === maxSelected && maxSelected > 0);
+              const uniqueTutors = getUniqueTutors(tutors);
+              const maxSelected = Math.max(...uniqueTutors.map(t => t.timesSelected || 0));
+              const mostSelected = uniqueTutors.filter(t => (t.timesSelected || 0) === maxSelected && maxSelected > 0);
               return mostSelected.length > 0 ? mostSelected.map((t, i) => (
                 <Text key={i}> {t.name} ({t.timesSelected} times)</Text>
               )) : <Text>No data.</Text>;
@@ -375,7 +399,8 @@ export default function Home() {
           <Box p={4} borderWidth="1px" borderRadius="lg">
             <Text fontWeight="bold" mb={2}>Least Selected (but at least once)</Text>
             {(() => {
-              const filtered = tutors.filter(t => t.timesSelected && t.timesSelected > 0);
+              const uniqueTutors = getUniqueTutors(tutors);
+              const filtered = uniqueTutors.filter(t => t.timesSelected && t.timesSelected > 0);
               const minSelected = Math.min(...filtered.map(t => t.timesSelected || 0));
               const leastSelected = filtered.filter(t => (t.timesSelected || 0) === minSelected);
               return leastSelected.length > 0 ? leastSelected.map((t, i) => (
@@ -386,7 +411,8 @@ export default function Home() {
           <Box p={4} borderWidth="1px" borderRadius="lg">
             <Text fontWeight="bold" mb={2}>Never Selected</Text>
             {(() => {
-              const neverSelected = tutors.filter(t => !t.timesSelected);
+              const uniqueTutors = getUniqueTutors(tutors);
+              const neverSelected = uniqueTutors.filter(t => !t.timesSelected);
               return neverSelected.length > 0 ? neverSelected.map((t, i) => (
                 <Text key={i}> {t.name}</Text>
               )) : <Text>Everyone has been selected!</Text>;
@@ -402,8 +428,9 @@ export default function Home() {
           ) : (
             <Box>
               {(() => {
-                const maxTimes = Math.max(...tutors.map(t => t.timesSelected || 0)) || 1; // avoid divide by 0
-                return tutors.map((t, i) => (
+                const uniqueTutors = getUniqueTutors(tutors);
+                const maxTimes = Math.max(...uniqueTutors.map(t => t.timesSelected || 0)) || 1; // avoid divide by 0
+                return uniqueTutors.map((t, i) => (
                   <Box key={i} mb={2}>
                     <Text fontSize="sm">{t.name} ({t.timesSelected || 0})</Text>
                     <Box bg="gray.100" h="6" borderRadius="md" overflow="hidden">
