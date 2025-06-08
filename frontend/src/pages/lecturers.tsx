@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, Checkbox,
   Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton,
@@ -27,7 +27,7 @@ export default function Home() {
     name: string;
   }
 
-  const flattenTutorsByCourse = (tutors: Tutor[]) => {
+  const flattenTutorsByCourse = useCallback((tutors: Tutor[]) => {
     const flatList: Tutor[] = [];
     tutors.forEach(tutor => {
       const courseList = tutor.courses?.split(',').map(c => c.trim()) || [''];
@@ -36,7 +36,7 @@ export default function Home() {
       });
     });
     return flatList;
-  };
+  }, []);
 
   const getUniqueTutors = (tutors: Tutor[]) => {
     const map = new Map<number, Tutor>();
@@ -48,7 +48,7 @@ export default function Home() {
     return Array.from(map.values());
   };
 
-  const fetchLecturerCourses = async () => {
+  const fetchLecturerCourses = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:5050/api/lecCourses?lecturerId=${localStorage.ID}`);
       const courses = await response.json();
@@ -57,7 +57,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching lecturer courses:", error);
     }
-  };
+  }, []);
 
   const [tutors, setTutors] = useState<Tutor[]>([]); //Hold tutor data
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal control
@@ -111,7 +111,7 @@ export default function Home() {
           console.error('Error fetching tutors:', error);
         });
     }
-  }, [searchTerm]);
+  }, [searchTerm, fetchLecturerCourses, flattenTutorsByCourse]);
 
   //Message if not logged in
   if (!lecturerLoginExists) {
