@@ -3,11 +3,13 @@ import { AppDataSource } from "../data-source"
 import { Course } from "../entity/Course"
 import { Lecturer_Course } from "../entity/Lecturer_Course"
 import { Tutor } from "../entity/Tutor"
+import { Tutor_Application } from "../entity/Tutor_Application"
 
 const courseRepository = AppDataSource.getRepository(Course)
 const lecturerRepository = AppDataSource.getRepository(Lecturer)
 const lecturerCourseRepository = AppDataSource.getRepository(Lecturer_Course)
 const tutorRepository = AppDataSource.getRepository(Tutor)
+const tutorApplicationRepository = AppDataSource.getRepository(Tutor_Application)
 
 export const resolvers = {
 
@@ -112,5 +114,34 @@ export const resolvers = {
       await tutorRepository.save(tutor);
       return tutor;
     }
+  },
+
+  // add a course resolver to grab tutor applications relative to the course
+  Course: {
+    // ensure functionality to filter by selected
+    tutorApplications: async (
+      parent: Course,
+      args: { filter?: { selected?: boolean } }
+    ) => {
+      // find parent course
+      const parentCourse: any = { course: { id: parent.id } };
+      // filter if the argument was passed into the function
+      if (args.filter?.selected !== undefined) {
+        parentCourse.selected = args.filter.selected;
+      }
+      return await tutorApplicationRepository.find({
+        where: parentCourse,
+        relations: { tutor: true, course: true }
+      });
+    }
+  },
+
+  Tutor_Application: {
+  course: async (parent: Tutor_Application) => {
+    return await courseRepository.findOneBy({ id: parent.course.id });
+  },
+  tutor: async (parent: Tutor_Application) => {
+    return await tutorRepository.findOneBy({ id: parent.tutor.id });
   }
+}
 }

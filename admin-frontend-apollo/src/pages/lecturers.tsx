@@ -37,7 +37,7 @@ export default function Home() {
       // if the lecturer is already assigned, delete the assignment
       if (assigned) {
         const lecturerCourseId =
-          assignedCourses.find(lecturerCourse => lecturerCourse.course.id === course.id)?.lecturer_course_id || "";
+          assignedCourses.find(lecturerCourse => lecturerCourse.course.id === course.id)?.lecturer_course_id || 0;
         await lecturerCourseService.deleteLecturerCourse(lecturerCourseId);
       } 
       // if the lecturer is not already assigned, assign them
@@ -58,12 +58,12 @@ export default function Home() {
   }
 
   // logic is used twice, pull out of other code
-  const fetchAssignedCourses = async (lecturerId: string) => {
+  const fetchAssignedCourses = async (lecturerId: number) => {
     const lecturerCourses = await lecturerCourseService.getCoursesByLecturerId(lecturerId)
     setAssignedCourses(lecturerCourses)
   }
 
-  const isAssigned = (courseId: string) => {
+  const isAssigned = (courseId: number) => {
     return assignedCourses.some(lecturerCourse => lecturerCourse.course.id === courseId)
   }
 
