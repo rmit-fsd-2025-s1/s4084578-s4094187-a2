@@ -4,6 +4,7 @@ import { Course } from "../entity/Course"
 import { Lecturer_Course } from "../entity/Lecturer_Course"
 import { Tutor } from "../entity/Tutor"
 import { Tutor_Application } from "../entity/Tutor_Application"
+import { In } from "typeorm"
 
 const courseRepository = AppDataSource.getRepository(Course)
 const lecturerRepository = AppDataSource.getRepository(Lecturer)
@@ -34,6 +35,25 @@ export const resolvers = {
       where: { lecturer: { id: lecturerId } },
       relations: { course: true, lecturer: true }
     }),
+
+    tutorsWithMinApplications: async (
+      _: unknown,
+      { min }: { min: number }
+    ) => {
+      const tutorsWithMinSelections = await tutorApplicationRepository
+        .createQueryBuilder("currentTutorApplication")
+        .leftJoin("currentTutorApplication.tutor", "tutor")
+        .leftJoin("currentTutorApplication.course", "course")
+        .where("currentTutorApplication.selected = :selected", { selected: true })
+        .select("tutor.id", "tutorId")
+        .groupBy("tutor.id")
+        .having("COUNT(DISTINCT course.id) >= :min", { min })
+        .getRawMany<{ tutorId: number }>();
+
+      const tutorIds = tutorsWithMinSelections.map(row => row.tutorId);
+      if (tutorIds.length === 0) return [];
+      return tutorRepository.findBy({ id: In(tutorIds) });
+    }
   },
 
   Mutation: {

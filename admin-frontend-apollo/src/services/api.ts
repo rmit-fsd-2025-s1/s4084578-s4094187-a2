@@ -1,5 +1,9 @@
 import { client } from "./apollo-client"
-import { gql } from "@apollo/client"
+import { 
+  ASSIGN_COURSE, CREATE_COURSE, DELETE_COURSE, GET_COURSES, 
+  GET_LECTURER_COURSES, GET_LECTURERS, GET_SELECTED_TUTOR_APPLICATIONS, 
+  GET_TUTORS, GET_TUTORS_WITH_MIN_APPLICATIONS, TOGGLE_TUTOR_BLOCK, UNASSIGN_COURSE, UPDATE_COURSE_MUTATION 
+} from "./queries";
 
 export interface Course {
   id: number;
@@ -16,6 +20,7 @@ export interface Lecturer {
 export interface Tutor {
   id: number;
   name: string;
+  email: string;
   availableFullTime: boolean;
   skillsList: string;
   academicCredentials: string;
@@ -38,13 +43,13 @@ export interface TutorApplication {
   tutor_application_id: number;
   selected: boolean;
   tutor: {
-    id: string;
+    id: number;
     name: string;
     email: string;
   }
   course: {
-    id: string;
-    course_id: number;
+    id: number;
+    course_id: string;
     name: string;
   }
 }
@@ -52,129 +57,6 @@ export interface TutorApplication {
 export interface CourseWithSelectedTutors extends Course {
   tutorApplications: TutorApplication[];
 }
-
-const GET_COURSES = gql`
-  query GetCourses {
-    courses {
-      id
-      course_id
-      name
-    }
-  }
-`
-
-const GET_LECTURERS = gql`
-  query GetLecturers {
-    lecturers {
-      id
-      email
-      name
-    }
-  }
-`
-
-const GET_TUTORS = gql`
-  query GetTutors {
-    tutors {
-      id
-      name
-      availableFullTime
-      skillsList
-      academicCredentials
-      blocked
-    }
-  }
-`
-
-const TOGGLE_TUTOR_BLOCK = gql`
-  mutation ToggleTutorBlock($id: ID!, $blocked: Boolean!) {
-    updateTutorBlock(id: $id, blocked: $blocked) {
-      id
-      blocked
-    }
-  }
-`
-
-const CREATE_COURSE = gql`
-  mutation CreateCourse($course_id: Int!, $name: String!) {
-    createCourse(course_id: $course_id, name: $name) {
-      id
-      course_id
-      name
-    }
-  }
-`
-
-const UPDATE_COURSE_MUTATION = gql`
-  mutation UpdateCourse($id: ID!, $course_id: Int, $name: String) {
-    updateCourse(id: $id, course_id: $course_id, name: $name) {
-      id
-      course_id
-      name
-    }
-  }
-`
-
-const DELETE_COURSE = gql`
-  mutation DeleteCourse($id: ID!) {
-    deleteCourse(id: $id)
-  }
-`
-
-const ASSIGN_COURSE = gql`
-  mutation AssignCourse($lecturerId: ID!, $courseId: ID!) {
-    assignCourseToLecturer(lecturerId: $lecturerId, courseId: $courseId) {
-      lecturer_course_id
-      course { id name }
-    }
-  }
-`
-
-const GET_LECTURER_COURSES = gql`
-  query GetLecturerCourses($lecturerId: ID!) {
-    lecturerCourses(lecturerId: $lecturerId) {
-      lecturer_course_id
-      lecturer {
-        id
-      }
-      course {
-        id
-        course_id
-        name
-      }
-    }
-  }
-`
-
-const UNASSIGN_COURSE = gql`
-  mutation UnassignCourse($lecturerCourseId: ID!) {
-    deleteLecturerCourse(lecturerCourseId: $lecturerCourseId)
-  }
-`
-
-const GET_SELECTED_TUTOR_APPLICATIONS = gql`
-  query GetSelectedTutorApplications {
-    courses {
-      id
-      course_id
-      name
-      tutorApplications(filter: { selected: true }) {
-        tutor_application_id
-        selected
-        tutor {
-          id
-          name
-          email
-        }
-        course {
-          id
-          course_id
-          name
-        }
-      }
-    }
-  }
-`
 
 export const courseService = {
   getCourses: async (): Promise<Course[]> => {
@@ -215,6 +97,15 @@ export const tutorService ={
       mutation: TOGGLE_TUTOR_BLOCK,
       variables: { id, blocked },
     })
+  },
+
+  getTutorsWithMinApplications: async (min: number): Promise<Tutor[]> => {
+    const { data } = await client.query({
+      query: GET_TUTORS_WITH_MIN_APPLICATIONS,
+      variables: { min },
+      fetchPolicy: "network-only"
+    });
+    return data.tutorsWithMinApplications;
   }
 }
 
