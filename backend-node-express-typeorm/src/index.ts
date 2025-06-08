@@ -8,7 +8,7 @@ import tutorRouter from "./routes/tutor.routes"
 import tutorApplicationRouter from "./routes/tutorApplications.routes"
 import cors from "cors";
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 5050;
 
 app.use(cors({origin: 'http://localhost:3000'}))
@@ -19,13 +19,14 @@ app.use("/api/courses", courseRouter)
 app.use("/api/tutors", tutorRouter)
 app.use("/api/applications", tutorApplicationRouter)
 
-AppDataSource.initialize()
+// if not in test mode, initialise data source
+if (process.env.NODE_ENV !== 'test') {
+  AppDataSource.initialize()
   .then(() => {
     console.log("Data Source has been initialized!");
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
-  .catch((error) =>
-    console.log("Error during Data Source initialization:", error)
-  );
+  .catch((error) => console.log("Error during Data Source initialization:", error))
+}
