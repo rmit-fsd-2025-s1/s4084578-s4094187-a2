@@ -9,22 +9,22 @@ export default function Home() {
 
   const [courses, setCourses] = useState<Course[]>([])
   const [formData, setFormData] = useState<Course>({
-    id: "-1",
-    course_id: 0,
+    id: -1,
+    course_id: "",
     name: ""
   });
 
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
   const [editName, setEditName] = useState("")
-  const [editCourseId, setEditCourseId] = useState<number>(0);
+  const [editCourseId, setEditCourseId] = useState<string>("");
 
   useEffect(() => {
     courseService.getCourses().then(setCourses)
   }, []);
 
   const handleSubmit = async () => {
-    if (!formData.name.trim() || formData.course_id <= 0) {
+    if (!formData.name.trim() || !formData.course_id.trim()) {
       alert("Please enter a valid course name and ID.")
       return
     }
@@ -32,7 +32,7 @@ export default function Home() {
       await courseService.createCourse(formData.course_id, formData.name);
       const updatedCourses = await courseService.getCourses()
       setCourses(updatedCourses)
-      setFormData({ id: "-1", course_id: 0, name: "" })
+      setFormData({ id: -1, course_id: "", name: "" })
     } 
     catch (error) {
       console.error("Error creating course:", error)
@@ -85,9 +85,9 @@ export default function Home() {
           />
           <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
           <Input
-            type="number"
+            type="string"
             value={formData.course_id}
-            onChange={(e) => setFormData({ ...formData, course_id: Number(e.target.value) })}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
         </FormControl>
         <br/>
@@ -135,7 +135,7 @@ export default function Home() {
             </FormControl>
             <FormControl>
               <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">ID</FormLabel>
-              <Input type="number" value={editCourseId} onChange={(e) => setEditCourseId(Number(e.target.value))}/>
+              <Input value={editCourseId} onChange={(e) => setEditCourseId(e.target.value)}/>
             </FormControl>
           </ModalBody>
           <ModalFooter>

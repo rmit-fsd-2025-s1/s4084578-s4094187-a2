@@ -2,19 +2,19 @@ import { client } from "./apollo-client"
 import { gql } from "@apollo/client"
 
 export interface Course {
-  id: string;
-  course_id: number;
+  id: number;
+  course_id: string;
   name: string;
 }
 
 export interface Lecturer {
-  id: string;
+  id: number;
   name: string;
   email: string;
 }
 
 export interface Tutor {
-  id: string;
+  id: number;
   name: string;
   availableFullTime: boolean;
   skillsList: string;
@@ -23,15 +23,34 @@ export interface Tutor {
 }
 
 export interface LecturerCourse {
-  lecturer_course_id: string;
+  lecturer_course_id: number;
   lecturer: {
+    id: number;
+  }
+  course: {
+    id: number;
+    course_id: string;
+    name: string;
+  }
+}
+
+export interface TutorApplication {
+  tutor_application_id: number;
+  selected: boolean;
+  tutor: {
     id: string;
+    name: string;
+    email: string;
   }
   course: {
     id: string;
     course_id: number;
     name: string;
   }
+}
+
+export interface CourseWithSelectedTutors extends Course {
+  tutorApplications: TutorApplication[];
 }
 
 const GET_COURSES = gql`
@@ -133,23 +152,47 @@ const UNASSIGN_COURSE = gql`
   }
 `
 
+const GET_SELECTED_TUTOR_APPLICATIONS = gql`
+  query GetSelectedTutorApplications {
+    courses {
+      id
+      course_id
+      name
+      tutorApplications(filter: { selected: true }) {
+        tutor_application_id
+        selected
+        tutor {
+          id
+          name
+          email
+        }
+        course {
+          id
+          course_id
+          name
+        }
+      }
+    }
+  }
+`
+
 export const courseService = {
   getCourses: async (): Promise<Course[]> => {
     const { data } = await client.query({ query: GET_COURSES, fetchPolicy: "network-only" })
     return data.courses
   },
 
-  createCourse: async (course_id: number, name: string): Promise<Course> => {
+  createCourse: async (course_id: string, name: string): Promise<Course> => {
     const { data } = await client.mutate({ mutation: CREATE_COURSE, variables: { course_id, name } })
     return data.createCourse
   },
 
-  updateCourse: async (id: string, course_id: number, name: string): Promise<Course> => {
+  updateCourse: async (id: number, course_id: string, name: string): Promise<Course> => {
     const { data } = await client.mutate({ mutation: UPDATE_COURSE_MUTATION, variables: { id, course_id, name } })
     return data.updateCourse
   },
 
-  deleteCourse: async (id: string): Promise<void> => {
+  deleteCourse: async (id: number): Promise<void> => {
     await client.mutate({ mutation: DELETE_COURSE, variables: { id }})
   }
 }
@@ -167,7 +210,7 @@ export const tutorService ={
     return data.tutors
   },
 
-  toggleTutorBlock: async (id: string, blocked: boolean): Promise<void> => {
+  toggleTutorBlock: async (id: number, blocked: boolean): Promise<void> => {
     await client.mutate({
       mutation: TOGGLE_TUTOR_BLOCK,
       variables: { id, blocked },
@@ -176,7 +219,7 @@ export const tutorService ={
 }
 
 export const lecturerCourseService = {
-  assignCourse: async (lecturerId: string, courseId: string): Promise<LecturerCourse> => {
+  assignCourse: async (lecturerId: number, courseId: number): Promise<LecturerCourse> => {
     const { data } = await client.mutate({
       mutation: ASSIGN_COURSE,
       variables: { lecturerId, courseId }
@@ -184,7 +227,7 @@ export const lecturerCourseService = {
     return data.assignCourseToLecturer
   },
 
-  getCoursesByLecturerId: async (lecturerId: string): Promise<LecturerCourse[]> => {
+  getCoursesByLecturerId: async (lecturerId: number): Promise<LecturerCourse[]> => {
     const { data } = await client.query({
       query: GET_LECTURER_COURSES, 
       variables: {lecturerId},
@@ -193,11 +236,21 @@ export const lecturerCourseService = {
     return data.lecturerCourses
   },
 
-  deleteLecturerCourse: async (lecturerCourseId: string): Promise<boolean> => {
+  deleteLecturerCourse: async (lecturerCourseId: number): Promise<boolean> => {
     const { data } = await client.mutate({
       mutation: UNASSIGN_COURSE,
       variables: { lecturerCourseId }
     })
     return data.deleteLecturerCourse
+  }
+}
+
+export const tutorApplicationService = {
+  getCoursesWithSelectedTutorApplications: async (): Promise<CourseWithSelectedTutors[]> => {
+    const { data } = await client.query({
+      query: GET_SELECTED_TUTOR_APPLICATIONS,
+      fetchPolicy: "network-only"
+    });
+    return data.courses as CourseWithSelectedTutors[];
   }
 }

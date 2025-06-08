@@ -5,8 +5,12 @@ export const typeDefs = gql`
     id: ID!
     course_id: String!
     name: String!
-    tutorApplications: [Tutor_Application!]
+    tutorApplications(filter: TutorApplicationFilter): [Tutor_Application!]
     lecturerCourses: [Lecturer_Course!]
+  }
+
+  input TutorApplicationFilter {
+    selected: Boolean
   }
 
   type Lecturer {
@@ -25,6 +29,7 @@ export const typeDefs = gql`
     skillsList: String!
     academicCredentials: String!
     blocked: Boolean!
+    timeSelected: Int!
   }
   
   type Tutor_Application {
@@ -48,8 +53,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createCourse(course_id: Int!, name: String!): Course!
-    updateCourse(id: ID!, course_id: Int, name: String): Course!
+    createCourse(course_id: String!, name: String!): Course!
+    updateCourse(id: ID!, course_id: String, name: String): Course!
     deleteCourse(id: ID!): Boolean!
     assignCourseToLecturer(lecturerId: ID!, courseId: ID!): Lecturer_Course!
     deleteLecturerCourse(lecturerCourseId: ID!): Boolean!

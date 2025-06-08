@@ -10,7 +10,7 @@ export default function Home() {
     tutorService.getTutors().then(setTutors)
   }, [])
 
-  const handleToggleBlock = async (tutorId: string, currentlyBlocked: boolean) => {
+  const handleToggleBlock = async (tutorId: number, currentlyBlocked: boolean) => {
     try {
       // pass !currentlyBlocked to pass the opposite value, switching it
       await tutorService.toggleTutorBlock(tutorId, !currentlyBlocked)
