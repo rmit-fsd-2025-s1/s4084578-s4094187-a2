@@ -27,6 +27,7 @@ export const resolvers = {
       return await tutorRepository.find()
     },
 
+    // returns all lecturer courses for a given lecturer
     lecturerCourses: async (
       _: unknown, 
       { lecturerId }: { lecturerId: number }
@@ -36,11 +37,14 @@ export const resolvers = {
       relations: { course: true, lecturer: true }
     }),
 
-    tutorsWithMinApplications: async (
+    // find tutors for report #2 (A candidate chosen for more than 3 courses)
+    getTutorsWithSelections: async (
       _: unknown,
       { min }: { min: number }
     ) => {
-      const tutorsWithMinSelections = await tutorApplicationRepository
+      // join to find tutors that have been selected by at least "min" courses
+      // uses selected field in tutor_application table
+      const getTutorsWithSelections = await tutorApplicationRepository
         .createQueryBuilder("currentTutorApplication")
         .leftJoin("currentTutorApplication.tutor", "tutor")
         .leftJoin("currentTutorApplication.course", "course")
@@ -50,12 +54,17 @@ export const resolvers = {
         .having("COUNT(DISTINCT course.id) >= :min", { min })
         .getRawMany<{ tutorId: number }>();
 
-      const tutorIds = tutorsWithMinSelections.map(row => row.tutorId);
+      // pull out tutor ids
+      const tutorIds = getTutorsWithSelections.map(row => row.tutorId);
       if (tutorIds.length === 0) return [];
+      // return relevant tutors
       return tutorRepository.findBy({ id: In(tutorIds) });
     },
 
+    // find tutors that haven't been selected at all
+    // used for report #3 (Candidates who have not been chosen for any of the course)
     unselectedTutors: async () => {
+      // find tutors with at least one selected application
       const selectedTutorRows = await tutorApplicationRepository
         .createQueryBuilder("tutorApplication")
         .select("tutorApplication.tutorId", "tutorId")
@@ -63,10 +72,9 @@ export const resolvers = {
         .groupBy("tutorApplication.tutorId")
         .getRawMany<{ tutorId: number }>();
 
+      // grab tutors not found in the previous query
       const selectedTutorIds = selectedTutorRows.map(row => row.tutorId);
-
       const query = tutorRepository.createQueryBuilder("tutor");
-
       if (selectedTutorIds.length > 0) {
         query.where("tutor.id NOT IN (:...selectedTutorIds)", { selectedTutorIds });
       }
@@ -175,6 +183,7 @@ export const resolvers = {
     }
   },
 
+  // helper resolver
   Tutor_Application: {
   course: async (parent: Tutor_Application) => {
     return await courseRepository.findOneBy({ id: parent.course.id });

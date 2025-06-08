@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     tutorApplicationService.getCoursesWithSelectedTutorApplications().then(setCoursesAndSelectedTutors)
-    tutorService.getTutorsWithMinApplications(3).then(setCandidateMoreThan3)
+    tutorService.getTutorsWithSelections(3).then(setCandidateMoreThan3)
     tutorService.getUnselectedTutors().then(setUnselected)
   }, []);
 

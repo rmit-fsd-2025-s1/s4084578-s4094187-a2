@@ -99,7 +99,7 @@ export const tutorService ={
     })
   },
 
-  getTutorsWithMinApplications: async (min: number): Promise<Tutor[]> => {
+  getTutorsWithSelections: async (min: number): Promise<Tutor[]> => {
     const { data } = await client.query({
       query: GET_TUTORS_WITH_MIN_APPLICATIONS,
       variables: { min },
