@@ -102,8 +102,8 @@ export const sampleTutorApplications = [
 ];
 
 export const sampleLecturerCourses = [
-  { lecturerId: 1, courseId: 1 },
-  { lecturerId: 2, courseId: 0 },
-  { lecturerId: 3, courseId: 3 },
-  { lecturerId: 4, courseId: 2 }
+  { lecturerId: 1, courseId: 2 },
+  { lecturerId: 2, courseId: 1 },
+  { lecturerId: 3, courseId: 4 },
+  { lecturerId: 4, courseId: 3 }
 ];

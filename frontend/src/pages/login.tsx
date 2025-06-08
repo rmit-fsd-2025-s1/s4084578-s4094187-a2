@@ -122,6 +122,7 @@ export default function Home() {
 
       // Save email and role to localStorage
       localStorage.setItem("account", user.email);
+      localStorage.setItem("ID", user.id);
 
       // Show confirmation before redirecting
       toast({
