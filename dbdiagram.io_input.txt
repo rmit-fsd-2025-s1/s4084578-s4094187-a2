@@ -1,0 +1,47 @@
+Table course {
+  id int [pk, increment]
+  course_id varchar
+  name varchar
+}
+
+Table lecturer {
+  id int [pk, increment]
+  email varchar [unique]
+  password varchar
+  name varchar
+  joinDate datetime
+}
+
+Table lecturer_course {
+  lecturer_course_id int [pk, increment]
+  lecturerId int  [ref: > lecturer.id]
+  courseId   int  [ref: > course.id]
+  Indexes {
+    (lecturerId, courseId) [unique]
+  }
+}
+
+Table tutor {
+  id int [pk, increment]
+  email varchar  [unique]
+  password varchar
+  name varchar
+  availableFullTime boolean
+  skillsList varchar
+  academicCredentials varchar
+  timesSelected int
+  blocked boolean
+  comments varchar
+  joinDate datetime
+}
+
+Table tutor_application {
+  tutor_application_id int [pk, increment]
+  selected boolean
+  tutorRole boolean
+  tutorId  int [ref: > tutor.id]
+  courseId int [ref: > course.id]
+  Indexes {
+    (tutorId, courseId, tutorRole) [unique]
+  }
+}
