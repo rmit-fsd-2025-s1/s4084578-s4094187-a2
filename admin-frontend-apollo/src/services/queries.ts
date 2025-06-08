@@ -136,3 +136,17 @@ export const GET_TUTORS_WITH_MIN_APPLICATIONS = gql`
     }
   }
 `
+
+export const GET_UNSELECTED_TUTORS = gql`
+  query GetUnselectedTutors {
+    unselectedTutors {
+      id
+      name
+      email
+      availableFullTime
+      skillsList
+      academicCredentials
+      blocked
+    }
+  }
+`

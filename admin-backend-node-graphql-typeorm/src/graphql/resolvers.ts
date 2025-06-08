@@ -53,6 +53,25 @@ export const resolvers = {
       const tutorIds = tutorsWithMinSelections.map(row => row.tutorId);
       if (tutorIds.length === 0) return [];
       return tutorRepository.findBy({ id: In(tutorIds) });
+    },
+
+    unselectedTutors: async () => {
+      const selectedTutorRows = await tutorApplicationRepository
+        .createQueryBuilder("tutorApplication")
+        .select("tutorApplication.tutorId", "tutorId")
+        .where("tutorApplication.selected = :selected", { selected: true })
+        .groupBy("tutorApplication.tutorId")
+        .getRawMany<{ tutorId: number }>();
+
+      const selectedTutorIds = selectedTutorRows.map(row => row.tutorId);
+
+      const query = tutorRepository.createQueryBuilder("tutor");
+
+      if (selectedTutorIds.length > 0) {
+        query.where("tutor.id NOT IN (:...selectedTutorIds)", { selectedTutorIds });
+      }
+
+      return query.getMany();
     }
   },
 

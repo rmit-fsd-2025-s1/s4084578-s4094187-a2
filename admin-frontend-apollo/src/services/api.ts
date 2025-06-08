@@ -2,7 +2,7 @@ import { client } from "./apollo-client"
 import { 
   ASSIGN_COURSE, CREATE_COURSE, DELETE_COURSE, GET_COURSES, 
   GET_LECTURER_COURSES, GET_LECTURERS, GET_SELECTED_TUTOR_APPLICATIONS, 
-  GET_TUTORS, GET_TUTORS_WITH_MIN_APPLICATIONS, TOGGLE_TUTOR_BLOCK, UNASSIGN_COURSE, UPDATE_COURSE_MUTATION 
+  GET_TUTORS, GET_TUTORS_WITH_MIN_APPLICATIONS, GET_UNSELECTED_TUTORS, TOGGLE_TUTOR_BLOCK, UNASSIGN_COURSE, UPDATE_COURSE_MUTATION 
 } from "./queries";
 
 export interface Course {
@@ -106,7 +106,16 @@ export const tutorService ={
       fetchPolicy: "network-only"
     });
     return data.tutorsWithMinApplications;
-  }
+  },
+
+  getUnselectedTutors: async (): Promise<Tutor[]> => {
+  const { data } = await client.query({
+    query: GET_UNSELECTED_TUTORS,
+    fetchPolicy: "network-only"
+  });
+  return data.unselectedTutors;
+}
+
 }
 
 export const lecturerCourseService = {

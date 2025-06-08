@@ -74,7 +74,7 @@ export default function Home() {
 
   return (
     <>
-      <Box p={4} borderWidth="1px" borderRadius="lg">
+      <Box className="box">
         <FormControl>
           <FormLabel fontWeight="bold">Add Course</FormLabel>
           <FormLabel fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" color="gray.600">Name</FormLabel>
@@ -95,7 +95,7 @@ export default function Home() {
       </Box>
 
       <br/>
-      <Box p={4} borderWidth="1px" borderRadius="lg">
+      <Box className="box">
         <h1><strong>All Courses</strong></h1>
         <TableContainer>
           <Table variant="simple">

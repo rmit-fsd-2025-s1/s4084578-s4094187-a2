@@ -69,7 +69,7 @@ export default function Home() {
 
   return (
     <div>
-      <Box p={4} borderWidth="1px" borderRadius="lg">
+      <Box className="box">
         <h1><strong>All Lecturers</strong></h1>
         <TableContainer>
           <Table variant="simple">
