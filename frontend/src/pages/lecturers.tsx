@@ -21,6 +21,17 @@ export default function Home() {
     course?: string;
   };
 
+  const flattenTutorsByCourse = (tutors: Tutor[]) => {
+    const flatList: Tutor[] = [];
+    tutors.forEach(tutor => {
+      const courseList = tutor.courses?.split(',').map(c => c.trim()) || [''];
+      courseList.forEach(course => {
+        flatList.push({ ...tutor, course });
+      });
+    });
+    return flatList;
+  };
+
   const [tutors, setTutors] = useState<Tutor[]>([]); //Hold tutor data
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal control
   const [rankings, setRankings] = useState<{ [tutorId: number]: number }>({});
@@ -40,19 +51,9 @@ export default function Home() {
     const fetchTutors = async () => {
       try {
         const response = await fetch(`http://localhost:5050/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
-
-        const flattenTutorsByCourse = (tutors: Tutor[]) => {
-          const flatList: Tutor[] = [];
-          tutors.forEach(tutor => {
-            const courseList = tutor.courses?.split(',').map(c => c.trim()) || [''];
-            courseList.forEach(course => {
-              flatList.push({ ...tutor, course });
-            });
-          });
-          return flatList;
-        };
-
+        
         const data = await response.json();
+        console.log("Fetched tutors:", data);
         const flatData = flattenTutorsByCourse(data);
         setTutors(flatData);
 
@@ -76,7 +77,8 @@ export default function Home() {
       fetch('http://localhost:5050/api/search')
         .then(res => res.json())
         .then(data => {
-          setTutors(data);
+          const flatData = flattenTutorsByCourse(data);
+          setTutors(flatData);
         })
         .catch(error => {
           console.error('Error fetching tutors:', error);
@@ -174,7 +176,7 @@ export default function Home() {
               <Th onClick={() => handleSort('academicCredentials')} cursor="pointer">
                 Credentials {sortColumn === 'academicCredentials' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
-              <Th onClick={() => handleSort('Courses')} cursor="pointer">
+              <Th onClick={() => handleSort('course')} cursor="pointer">
                 Courses {sortColumn === 'Courses' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
               </Th>
               <Th onClick={() => handleSort('availableFullTime')} cursor="pointer">
@@ -229,9 +231,9 @@ export default function Home() {
                     <Th onClick={() => handleSort('academicCredentials')} cursor="pointer">
                       Credentials {sortColumn === 'academicCredentials' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
                     </Th>
-                    {/*<Th onClick={() => handleSort('Courses')} cursor="pointer">
+                    <Th onClick={() => handleSort('course')} cursor="pointer">
                       Courses {sortColumn === 'Courses' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
-                    </Th>*/}
+                    </Th>
                     <Th onClick={() => handleSort('availableFullTime')} cursor="pointer">
                       Availability {sortColumn === 'availableFullTime' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
                     </Th>
@@ -270,10 +272,7 @@ export default function Home() {
                           ))}
                         </Td>
                         <Td>{tutor.academicCredentials}</Td>
-                        {/*<Td>{tutor.courses.split(',').map((course: string, idx: number) => (
-                          <div key={idx}>{course.trim()}</div>
-                          ))}
-                        </Td>*/}
+                        <Td>{tutor.course || 'N/A'}</Td>
                         <Td>
                           {tutor.availableFullTime ? "Full-time" : "Part-time"}
                         </Td>

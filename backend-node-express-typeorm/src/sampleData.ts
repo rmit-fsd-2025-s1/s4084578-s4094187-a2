@@ -1,34 +1,10 @@
+// sampleData.ts
 export const sampleLecturers = [
-  {
-    email: "AidenCobb@rmit.edu.au",
-    password: "wlCO5g06~2S(",
-    name: "Aiden Cobb",
-    lecturerCourses: []
-  },
-  {
-    email: "AustinCordova@rmit.edu.au",
-    password: "]9u6X5K44rc$",
-    name: "Austin Cordova",
-    lecturerCourses: []
-  },
-  {
-    email: "MayMullen@rmit.edu.au",
-    password: "1+83Wk[QQ}0a",
-    name: "May Mullen",
-    lecturerCourses: []
-  },
-  {
-    email: "AllenSantos@rmit.edu.au",
-    password: "JweJ<},uC859",
-    name: "Allen Santos",
-    lecturerCourses: []
-  },
-  {
-    email: "GabrielWalters@rmit.edu.au",
-    password: "-))rKdS59f4]",
-    name: "Gabriel Walters",
-    lecturerCourses: []
-  }
+  { email: "AidenCobb@rmit.edu.au", password: "wlCO5g06~2S(", name: "Aiden Cobb", lecturerCourses: [] },
+  { email: "AustinCordova@rmit.edu.au", password: "]9u6X5K44rc$", name: "Austin Cordova", lecturerCourses: [] },
+  { email: "MayMullen@rmit.edu.au", password: "1+83Wk[QQ}0a", name: "May Mullen", lecturerCourses: [] },
+  { email: "AllenSantos@rmit.edu.au", password: "JweJ<},uC859", name: "Allen Santos", lecturerCourses: [] },
+  { email: "GabrielWalters@rmit.edu.au", password: "-))rKdS59f4]", name: "Gabriel Walters", lecturerCourses: [] }
 ];
 
 export const sampleTutors = [
@@ -107,104 +83,27 @@ export const sampleTutors = [
 ];
 
 export const sampleCourses = [
-  {
-    course_id: "COSC2123",
-    name: "Algorithms and Analysis",
-    lecturerCourses: [],
-    tutorApplications: []
-  },
-  {
-    course_id: "COSC2758",
-    name: "Full Stack Development",
-    lecturerCourses: [],
-    tutorApplications: []
-  },
-  {
-    course_id: "COSC3413",
-    name: "Software Engineering Fundamentals",
-    lecturerCourses: [],
-    tutorApplications: []
-  },
-  {
-    course_id: "COSC2625",
-    name: "Introduction to Cyber Security",
-    lecturerCourses: [],
-    tutorApplications: []
-  }
+  { course_id: "COSC2123", name: "Algorithms and Analysis", lecturerCourses: [], tutorApplications: [] },
+  { course_id: "COSC2758", name: "Full Stack Development", lecturerCourses: [], tutorApplications: [] },
+  { course_id: "COSC3413", name: "Software Engineering Fundamentals", lecturerCourses: [], tutorApplications: [] },
+  { course_id: "COSC2625", name: "Introduction to Cyber Security", lecturerCourses: [], tutorApplications: [] }
 ];
 
 export const sampleTutorApplications = [
-  {
-    selected: false,
-    tutorRole: true,
-    tutor: 1,
-    courseID: 1
-  },
-  {
-    selected: false,
-    tutorRole: false,
-    tutor: 1,
-    courseID: 2
-  },
-  {
-    selected: false,
-    tutorRole: true,
-    tutor: 1,
-    courseID: 3
-  },
-  {
-    selected: false,
-    tutorRole: true,
-    tutor: 1,
-    courseID: 4
-  },
-  {
-    selected: false,
-    tutorRole: false,
-    tutor: 6,
-    courseID: 1
-  },
-  {
-    selected: false,
-    tutorRole: false,
-    tutor: 6,
-    courseID: 2
-  },
-  {
-    selected: false,
-    tutorRole: true,
-    tutor: 6,
-    courseID: 3
-  },
-  {
-    selected: false,
-    tutorRole: true,
-    tutor: 6,
-    courseID: 4
-  },
-  {
-    selected: false,
-    tutorRole: true,
-    tutor: 6,
-    courseID: 1
-  }
+  { selected: false, tutorRole: true, tutor: 0, courseID: 0 },
+  { selected: false, tutorRole: false, tutor: 0, courseID: 1 },
+  { selected: false, tutorRole: true, tutor: 0, courseID: 2 },
+  { selected: false, tutorRole: true, tutor: 0, courseID: 3 },
+  { selected: false, tutorRole: false, tutor: 5, courseID: 0 },
+  { selected: false, tutorRole: false, tutor: 5, courseID: 1 },
+  { selected: false, tutorRole: true, tutor: 5, courseID: 2 },
+  { selected: false, tutorRole: true, tutor: 5, courseID: 3 },
+  { selected: false, tutorRole: true, tutor: 5, courseID: 0 }
 ];
 
 export const sampleLecturerCourses = [
-  {
-    lecturerId: 1,
-    courseId: 2
-  },
-  {
-    lecturerId: 2,
-    courseId: 1
-  },
-  {
-    lecturerId: 4,
-    courseId: 4
-  },
-  {
-    lecturerId: 5,
-    courseId: 3
-  }
+  { lecturerId: 0, courseId: 1 },
+  { lecturerId: 1, courseId: 0 },
+  { lecturerId: 3, courseId: 3 },
+  { lecturerId: 4, courseId: 2 }
 ];
