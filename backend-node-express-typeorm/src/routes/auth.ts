@@ -19,22 +19,32 @@ router.post("/login", async(req, res) => {
   const { email, password } = req.body;
 
   const lecturer = await lecturerRepo.findOneBy({ email: email as string });
+    if (lecturer) {
+      if (lecturer.password !== password) {
+        res.status(404).json({ message: "Incorrect Password" });
+        return;
+      }
 
-    if (!lecturer) {
-      const tutor = await tutorRepo.findOneBy({ email: email as string });
-      if (!tutor) {
-        res.status(404).json({ message: "User not found" });
-        return;
-      }
-      if (tutor.blocked) {
-        res.status(403).json({ message: "This user has been blocked. Please contact the system admin." });
-        return;
-      }
-      res.json({...tutor, role: "tutor"});
+      res.json({ ...lecturer, role: "lecturer" });
       return;
     }
 
-    res.json({...lecturer, role: "lecturer"});
+    const tutor = await tutorRepo.findOneBy({ email: email as string });
+    if (!tutor) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    if (tutor.password !== password) {
+      res.status(404).json({ message: "Incorrect Password" })
+      return
+    }
+    if (tutor.blocked) {
+      res.status(403).json({ message: "This user has been blocked. Please contact the system admin." });
+      return;
+    }
+    res.json({...tutor, role: "tutor"});
+    return;
+
 
     /*res.json({
       id: user.id,
