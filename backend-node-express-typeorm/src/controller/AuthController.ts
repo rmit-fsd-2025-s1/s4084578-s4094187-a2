@@ -210,7 +210,7 @@ export class AuthController {
 
   updateTutor = async (req: Request, res: Response) => {
     const tutorId = parseInt(req.params.id);
-    const { Comment, TimesSelected } = req.body;
+    const { comments, timesSelected } = req.body;
 
     try {
       const tutor = await this.tutorRepo.findOneBy({ id: tutorId });
@@ -220,8 +220,8 @@ export class AuthController {
       }
 
       // Update fields
-      if (Comment !== undefined) tutor.comments = Comment;
-      if (TimesSelected !== undefined) tutor.timesSelected = TimesSelected;
+      if (comments !== undefined) tutor.comments = comments;
+      if (timesSelected !== undefined) tutor.timesSelected = timesSelected;
 
       const savedTutor = await this.tutorRepo.save(tutor);
       res.json(savedTutor);

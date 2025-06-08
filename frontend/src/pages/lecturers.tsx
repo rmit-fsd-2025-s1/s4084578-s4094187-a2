@@ -68,6 +68,8 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState(''); //Search bar input
   const [lecturerLoginExists, setLecturerLoginExists] = useState(false); //Check if user has lecturer permissions
   const [allowedCourses, setAllowedCourses] = useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const rowKey = (tutor: Tutor) => `${tutor.id}-${tutor.course || ''}`;
 
   useEffect(() => {
     // setup login validation
@@ -123,28 +125,20 @@ export default function Home() {
   }
 
   // Handle checkbox toggle
-  const handleCheckboxChange = async (name: string) => {
-    const updatedTutors = tutors.map(tutor =>
-      tutor.name === name ? { ...tutor, Selected: !tutor.Selected } : tutor
-    );
-    setTutors(updatedTutors);
-
-    const updatedTutor = updatedTutors.find(t => t.name === name);
-    if (updatedTutor) {
-      try {
-        await fetch(`http://localhost:5050/api/tutors/${updatedTutor.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedTutor)
-        });
-      } catch (error) {
-        console.error('Error updating tutor:', error);
+  const handleCheckboxChange = (key: string) => {
+    setSelectedRows(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
       }
-    }
+      return newSet;
+    });
   };
 
   // Function to filter selected tutors
-  const selectedTutors = tutors.filter(tutor => tutor.Selected);
+  const selectedTutors = tutors.filter(t => selectedRows.has(rowKey(t)));
 
   // Handle sorting
   const handleSort = (column: string) => {
@@ -217,9 +211,10 @@ export default function Home() {
               .filter(tutor => allowedCourses.includes(tutor.course || ''))
               .map((tutor, i) => (
               <Tr key={i}>
-              <Td><Checkbox isChecked={tutor.Selected} 
-                            onChange={() => handleCheckboxChange(tutor.name)} 
-                            data-testid = 'lecturer-tutor-checkbox'/></Td>
+              <Td><Checkbox
+                      isChecked={selectedRows.has(rowKey(tutor))}
+                      onChange={() => handleCheckboxChange(rowKey(tutor))}
+                    /></Td>
                 <Td>{tutor.name}</Td>
                 <Td>
                   {tutor.skillsList.split(',').map((skill: string, idx: number) => (
@@ -273,15 +268,12 @@ export default function Home() {
                   {/*Message if none selected*/}
                   {selectedTutors.length === 0 ? (
                     <Tr>
-                      <Td colSpan={6}>No tutors selected.</Td>
+                      <Td colSpan={7}>No tutors selected.</Td>
                     </Tr>
                   ) : (
-                    sortedTutors
-                      .map((tutor, index) => ({ tutor, index }))
-                      .filter(({ tutor }) => tutor.Selected)
-                      .map(({ tutor, index }) => (
+                    selectedTutors.map((tutor, index) => (
                       <Tr key={index}>
-                         <Td>
+                        <Td>
                           <select
                             value={rankings[tutor.id] || ''}
                             onChange={(e) =>
@@ -314,7 +306,7 @@ export default function Home() {
                             rows={2}
                             style={{ width: '100%' }}
                           />
-                      </Td>
+                        </Td>
                       </Tr>
                     ))
                   )}
@@ -333,9 +325,9 @@ export default function Home() {
                 if (index !== -1) {
                   const updatedTutor = {
                     ...tutor,
-                    Comment: comments[tutor.id] || '',
+                    comments: comments[tutor.id] || '',
                     Selected: false,
-                    TimesSelected: (tutor.timesSelected || 0) + 1,
+                    timesSelected: (tutor.timesSelected || 0) + 1,
                   };
 
                   updated[index] = updatedTutor;
@@ -356,13 +348,15 @@ export default function Home() {
               try {
                 const response = await fetch('http://localhost:5050/api/search');
                 const data = await response.json();
-                
+
                 const deselectedData = data.map((t: Tutor) => ({
                   ...t,
                   Selected: false,
                 }));
 
-                setTutors(deselectedData);
+                const flattened = flattenTutorsByCourse(deselectedData);
+
+                setTutors(flattened);
 
                 const updatedComments: { [id: number]: string } = {};
                 data.forEach((t: Tutor) => {
@@ -375,7 +369,8 @@ export default function Home() {
 
               setRankings({});
               onClose();
-            }}>
+            }}
+          >
             Submit Rankings
           </Button>
           <Button onClick={onClose}>
