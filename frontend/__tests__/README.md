@@ -1,1 +1,1 @@
-tests have not been looked at since assignment 1. They probably don't make sense anymore.
+Frontend tests have not been reviewed since assignment 1. They don't make sense anymore. Please see the main app backend (/backend-node-express-typeorm) for our backend unit tests.
