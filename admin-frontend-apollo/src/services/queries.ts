@@ -125,7 +125,7 @@ export const GET_SELECTED_TUTOR_APPLICATIONS = gql`
 
 export const GET_TUTORS_WITH_MIN_APPLICATIONS = gql`
   query GetTutorsWithMinApplications($min: Int!) {
-    tutorsWithMinApplications(min: $min) {
+    getTutorsWithSelections(min: $min) {
       id
       name
       email

@@ -105,7 +105,7 @@ export const tutorService ={
       variables: { min },
       fetchPolicy: "network-only"
     });
-    return data.tutorsWithMinApplications;
+    return data.tutorsWithMinApplications ?? [];
   },
 
   getUnselectedTutors: async (): Promise<Tutor[]> => {
