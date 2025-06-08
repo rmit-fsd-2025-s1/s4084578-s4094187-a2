@@ -46,9 +46,14 @@ export default function Home() {
       }
       // update data for buttons to display correctly
       await fetchAssignedCourses(selectedLecturer.id);
-    } catch (err: any) {
-      alert(err.message ?? "Unable to update lecturer assignment to course.");
-      console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+        console.error(err);
+      } else {
+        console.error("Unexpected error", err);
+        alert("Unable to update lecturer assignment to course.");
+      }
     }
   }
 

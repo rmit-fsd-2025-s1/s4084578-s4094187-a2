@@ -69,7 +69,7 @@ export default function Home() {
           </Button>
           <br/>
           <Link href="/signup" className="nav-link">
-            Don't have an account? Sign up here.
+            Don`&apos;`t have an account? Sign up here.
           </Link>
         </main>
       </div>

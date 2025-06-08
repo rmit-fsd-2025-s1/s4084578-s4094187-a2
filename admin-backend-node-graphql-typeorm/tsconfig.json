@@ -21,7 +21,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "src/entity"  ],
   "exclude": [
     "node_modules"
   ]

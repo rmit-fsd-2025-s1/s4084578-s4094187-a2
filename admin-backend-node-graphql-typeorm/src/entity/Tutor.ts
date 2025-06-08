@@ -1,12 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 import { Tutor_Application } from "./Tutor_Application"
 
 @Entity()
 export class Tutor {
     @PrimaryGeneratedColumn({ type: "int"})
-    id: string;
+    id: number;
 
-    @Column({ type: "varchar", length: 255})
+    @Column({ type: "varchar", length: 255, unique: true})
     email: string;
 
     @Column({ type: "varchar", length: 255})
@@ -24,9 +24,18 @@ export class Tutor {
     @Column({ type: "varchar", length: 255})
     academicCredentials: string;
 
-    @Column({ type: "tinyint"})
+    @Column({type: "int", default: 0})
+    timesSelected: number;
+
+    @Column({default: false, type: "tinyint"})
     blocked: boolean;
+
+    @Column({ nullable: true, type: "varchar", length: 255})
+    comments: string;
 
     @OneToMany(() => Tutor_Application, tutorApplication => tutorApplication.tutor)
     tutorApplications: Tutor_Application[];
+
+    @CreateDateColumn()
+    joinDate: Date;
 }

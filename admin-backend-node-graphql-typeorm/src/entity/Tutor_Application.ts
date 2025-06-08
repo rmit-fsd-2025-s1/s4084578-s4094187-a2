@@ -3,13 +3,16 @@ import { Tutor } from "./Tutor";
 import { Course } from "./Course";
 
 @Entity()
-@Unique(["tutor", "course"])
+@Unique(["tutor", "course", "tutorRole"])
 export class Tutor_Application {
     @PrimaryGeneratedColumn({type: "int"})
-    tutor_application_id: string;
+    tutor_application_id: number;
 
-    @Column({ type: "tinyint"})
+    @Column({ type: "tinyint", default: false})
     selected: boolean;
+
+    @Column({ type: "tinyint", default: false})
+    tutorRole: boolean;
 
     @ManyToOne(() => Tutor, tutor => tutor.tutorApplications, { onDelete: "CASCADE" })
     tutor: Tutor;

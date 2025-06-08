@@ -20,7 +20,7 @@ export default function AdminLogin({ children }: AdminLoginProps) {
       setIsVerified(false)
       router.replace("/login")
     }
-  }, [])
+  }, [router])
 
   if (isVerified === null) return null
 

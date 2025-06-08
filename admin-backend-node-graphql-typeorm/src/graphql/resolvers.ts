@@ -26,7 +26,7 @@ export const resolvers = {
 
     lecturerCourses: async (
       _: unknown, 
-      { lecturerId }: { lecturerId: string }
+      { lecturerId }: { lecturerId: number }
     ) =>
     lecturerCourseRepository.find({
       where: { lecturer: { id: lecturerId } },
@@ -37,7 +37,7 @@ export const resolvers = {
   Mutation: {
     createCourse: async (
       _: unknown,
-      { course_id, name }: { course_id: number; name: string }
+      { course_id, name }: { course_id: string; name: string }
     ) => {
       const course = courseRepository.create({ course_id, name })
       return await courseRepository.save(course);
@@ -45,7 +45,7 @@ export const resolvers = {
 
     updateCourse: async (
       _: unknown,
-      args: {id: string; course_id?: number; name?: string}
+      args: {id: number; course_id?: string; name?: string}
     ) => {
       const {id, course_id, name} = args
       // find related course
@@ -54,14 +54,14 @@ export const resolvers = {
       if (!course) throw new Error(`Course with id ${id} not found`)
       
       // update values in correct course
-      if (typeof course_id === "number") course.course_id = course_id
+      if (typeof course_id === "string") course.course_id = course_id
       if (typeof name === "string") course.name = name
       return await courseRepository.save(course)
     },
 
     deleteCourse: async (
       _: unknown,
-      { id }: { id: string }
+      { id }: { id: number }
     ) => {
       const result = await courseRepository.delete({ id })
       // error if course doesn't exist
@@ -71,7 +71,7 @@ export const resolvers = {
 
     assignCourseToLecturer: async (
       _: unknown, 
-      { lecturerId, courseId }: { lecturerId: string; courseId: string }
+      { lecturerId, courseId }: { lecturerId: number; courseId: number }
     ) => {
       // find related lecturer and course
       const [lecturer, course] = await Promise.all([
@@ -90,9 +90,10 @@ export const resolvers = {
       return lecturerCourseRepository.save(lecturerCourse)
     },
 
+    // unassign lecturer from a course
     deleteLecturerCourse: async (
       _: unknown,
-      { lecturerCourseId }: { lecturerCourseId: string }
+      { lecturerCourseId }: { lecturerCourseId: number }
     ) => {
       const result = await lecturerCourseRepository.delete({ lecturer_course_id: lecturerCourseId })
       if (!result.affected) {
@@ -101,7 +102,8 @@ export const resolvers = {
       return true
     },
 
-    updateTutorBlock: async (_: any, { id, blocked }: { id: string, blocked: boolean }) => {
+    // block and unblock tutors
+    updateTutorBlock: async (_: any, { id, blocked }: { id: number, blocked: boolean }) => {
       const tutor = await tutorRepository.findOneBy({ id });
       if (!tutor) {
         throw new Error("Tutor not found");

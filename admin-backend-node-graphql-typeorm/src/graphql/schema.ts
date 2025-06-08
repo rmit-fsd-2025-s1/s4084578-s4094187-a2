@@ -3,7 +3,7 @@ import gql from "graphql-tag"
 export const typeDefs = gql`
   type Course {
     id: ID!
-    course_id: Int!
+    course_id: String!
     name: String!
     tutorApplications: [Tutor_Application!]
     lecturerCourses: [Lecturer_Course!]
@@ -44,7 +44,6 @@ export const typeDefs = gql`
     courses: [Course!]!
     lecturers: [Lecturer!]!
     tutors: [Tutor!]!
-    # finds all courses that a lecturer is assigned to by their id
     lecturerCourses(lecturerId: ID!): [Lecturer_Course!]!
   }
 

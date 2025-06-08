@@ -1,3 +1,5 @@
+// npm run sample
+
 import { AppDataSource } from './data-source';
 import { Tutor } from "./entity/Tutor";
 import { Lecturer } from "./entity/Lecturer";
@@ -113,25 +115,25 @@ const sampleTutors = [
 
 const sampleCourses = [
   {
-    course_id: 2123,
+    course_id: "COSC2123",
     name: "Algorithms and Analysis",
     lecturerCourses: [],
     tutorApplications: []
   },
   {
-    course_id: 2758,
+    course_id: "COSC2758",
     name: "Full Stack Development",
     lecturerCourses: [],
     tutorApplications: []
   },
   {
-    course_id: 3413,
+    course_id: "COSC3413",
     name: "Software Engineering Fundamentals",
     lecturerCourses: [],
     tutorApplications: []
   },
   {
-    course_id: 2625,
+    course_id: "COSC2625",
     name: "Introduction to Cyber Security",
     lecturerCourses: [],
     tutorApplications: []

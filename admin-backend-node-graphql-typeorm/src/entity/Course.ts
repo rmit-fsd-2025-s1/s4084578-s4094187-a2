@@ -5,10 +5,10 @@ import { Tutor_Application } from "./Tutor_Application";
 @Entity()
 export class Course {
     @PrimaryGeneratedColumn({ type: "int"})
-    id: string;
+    id: number;
 
-    @Column({ type: "int"})
-    course_id: number;
+    @Column({ type: "varchar", length: 255})
+    course_id: string;
 
     @Column({ type: "varchar", length: 255})
     name: string;
