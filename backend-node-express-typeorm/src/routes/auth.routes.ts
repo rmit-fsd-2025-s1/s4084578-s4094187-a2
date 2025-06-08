@@ -36,4 +36,8 @@ router.put("/tutors/:id", async (req, res) => {
   await controller.updateTutor(req, res);
 });
 
+router.get('/lecCourses', async (req, res) => {
+  await controller.getLecCourses(req, res);
+});
+
 export default router;

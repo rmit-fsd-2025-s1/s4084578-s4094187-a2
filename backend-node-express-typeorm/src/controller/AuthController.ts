@@ -3,10 +3,14 @@ import { Request, Response } from "express";
 import { getDataSource } from "../utils/getDataSource";
 import { Lecturer } from "../entity/Lecturer";
 import { Tutor } from "../entity/Tutor";
+import { Lecturer_Course } from "../entity/Lecturer_Course";
+import { Course } from "../entity/Course";
 
 export class AuthController {
   private lecturerRepo = getDataSource().getRepository(Lecturer);
   private tutorRepo = getDataSource().getRepository(Tutor);
+  private lecCourseRepo = getDataSource().getRepository(Lecturer_Course);
+  private courseRepo = getDataSource().getRepository(Course);
 
   private isValidEmail = (email: string) => email.endsWith("@rmit.edu.au");
   private isValidPassword = (password: string) => {
@@ -226,4 +230,30 @@ export class AuthController {
       res.status(500).json({ message: 'Error updating tutor' });
     }
   };
+
+  getLecCourses = async (req: Request, res: Response) => {
+    const lecturerId = req.query.lecturerId;
+
+    if (!lecturerId) {
+      res.status(400).json({ message: "lecturerId is required" });
+      return;
+    }
+
+    try {
+      const courses = await this.lecCourseRepo.find({
+        where: {
+          lecturer: {
+            id: Number(lecturerId),
+          },
+        },
+        relations: ['course'],
+      });
+
+      const courseList = courses.map(c => c.course);
+      res.json(courseList);
+    } catch (err) {
+      console.error("Error fetching lecturer courses:", err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }

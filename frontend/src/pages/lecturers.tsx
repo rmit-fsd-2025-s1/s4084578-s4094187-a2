@@ -42,6 +42,17 @@ export default function Home() {
     return Array.from(map.values());
   };
 
+  const fetchLecturerCourses = async () => {
+    try {
+      const response = await fetch(`http://localhost:5050/api/lecCourses?lecturerId=${localStorage.ID}`);
+      const courses = await response.json();
+      console.log('Courses fetched for lecturer:', courses);
+      setAllowedCourses(courses.map((course: any) => course.name));
+    } catch (error) {
+      console.error("Error fetching lecturer courses:", error);
+    }
+  };
+
   const [tutors, setTutors] = useState<Tutor[]>([]); //Hold tutor data
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal control
   const [rankings, setRankings] = useState<{ [tutorId: number]: number }>({});
@@ -57,6 +68,7 @@ export default function Home() {
     const lecturerLoginCheck = localStorage.getItem("login");
     if (lecturerLoginCheck == "lecturer" || lecturerLoginCheck == "admin") {
       setLecturerLoginExists(true)
+      fetchLecturerCourses();
     }
 
     const fetchTutors = async () => {
@@ -67,7 +79,6 @@ export default function Home() {
         const flatData = flattenTutorsByCourse(data);
         setTutors(flatData);
 
-
         const initialComments: { [id: number]: string } = {};
         data.forEach((t: Tutor) => {
           initialComments[t.id] = t.comments || '';
@@ -77,16 +88,6 @@ export default function Home() {
         console.log('Fetched tutor data:', data);
       } catch (error) {
         console.error('Error fetching tutors:', error);
-      }
-    };
-
-    const fetchLecturerCourses = async () => {
-      try {
-        const response = await fetch(`http://localhost:5050/api/lecCourses?lecturerId=${localStorage.ID}`);
-        const courses = await response.json();
-        setAllowedCourses(courses.map((course: any) => course.name));
-      } catch (error) {
-        console.error("Error fetching lecturer courses:", error);
       }
     };
 
