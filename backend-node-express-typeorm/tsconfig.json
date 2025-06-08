@@ -9,7 +9,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
-    "types": ["jest"],
+    "types": ["jest", "node"],
   },
   "exclude": ["dist", "node_modules"]
 }
