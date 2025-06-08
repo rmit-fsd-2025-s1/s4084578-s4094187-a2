@@ -8,8 +8,4 @@ router.get("/:email", async (req, res) => {
   await tutorController.getByEmail(req, res)
 })
 
-router.put("/:email", async (req, res) => {
-  await tutorController.updateByEmail(req, res)
-})
-
 export default router;
