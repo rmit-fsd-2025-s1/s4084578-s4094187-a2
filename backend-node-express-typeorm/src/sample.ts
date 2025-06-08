@@ -4,6 +4,8 @@ import { AppDataSource } from './data-source';
 import { Tutor } from "./entity/Tutor";
 import { Lecturer } from "./entity/Lecturer";
 import { Course } from "./entity/Course";
+import { Tutor_Application } from './entity/Tutor_Application';
+import { Lecturer_Course } from './entity/Lecturer_Course';
 
 const sampleLecturers = [
   {
@@ -140,10 +142,88 @@ const sampleCourses = [
   }
 ];
 
+const sampleTutorApplications = [
+  {
+    selected: false,
+    tutorRole: true,
+    tutor: 1,
+    courseID: 1
+  },
+  {
+    selected: false,
+    tutorRole: false,
+    tutor: 1,
+    courseID: 2
+  },
+  {
+    selected: false,
+    tutorRole: true,
+    tutor: 1,
+    courseID: 3
+  },
+  {
+    selected: false,
+    tutorRole: true,
+    tutor: 1,
+    courseID: 4
+  },
+  {
+    selected: false,
+    tutorRole: false,
+    tutor: 6,
+    courseID: 1
+  },
+  {
+    selected: false,
+    tutorRole: false,
+    tutor: 6,
+    courseID: 2
+  },
+  {
+    selected: false,
+    tutorRole: true,
+    tutor: 6,
+    courseID: 3
+  },
+  {
+    selected: false,
+    tutorRole: true,
+    tutor: 6,
+    courseID: 4
+  },
+  {
+    selected: false,
+    tutorRole: true,
+    tutor: 6,
+    courseID: 1
+  }
+];
+
+const sampleLecturerCourses = [
+  {
+    lecturerId: 1,
+    courseId: 2
+  },
+  {
+    lecturerId: 2,
+    courseId: 1
+  },
+  {
+    lecturerId: 4,
+    courseId: 4
+  },
+  {
+    lecturerId: 5,
+    courseId: 3
+  }
+];
+
 AppDataSource.initialize().then(async () => {
   const tutorRepo = AppDataSource.getRepository(Tutor);
   const lecturerRepo = AppDataSource.getRepository(Lecturer);
   const courseRepo = AppDataSource.getRepository(Course);
+  const tutAppRepo = AppDataSource.getRepository(Tutor_Application);
+  const lecCourseRepo = AppDataSource.getRepository(Lecturer_Course);
 
   // Insert tutors
   for (const tutor of sampleTutors) {
@@ -161,6 +241,42 @@ AppDataSource.initialize().then(async () => {
   for (const course of sampleCourses) {
     const newCourse = courseRepo.create(course);
     await courseRepo.save(newCourse);
+  }
+
+  const tutors = await tutorRepo.find();
+  const lecturers = await lecturerRepo.find();
+  const courses = await courseRepo.find();
+
+  // Insert tutor applications
+  for (const app of sampleTutorApplications) {
+    const tutor = tutors[app.tutor - 1];
+    const course = courses[app.courseID - 1];
+
+    if (!tutor || !course) continue;
+
+    const newTutApp = tutAppRepo.create({
+      selected: app.selected,
+      tutorRole: app.tutorRole,
+      tutor,
+      course
+    });
+
+    await tutAppRepo.save(newTutApp);
+  }
+
+  // Insert lecturer courses
+  for (const lecCourse of sampleLecturerCourses) {
+    const lecturer = lecturers[lecCourse.lecturerId - 1];
+    const course = courses[lecCourse.courseId - 1];
+
+    if (!lecturer || !course) continue;
+
+    const newLecCourse = lecCourseRepo.create({
+      lecturer,
+      course
+    });
+
+    await lecCourseRepo.save(newLecCourse);
   }
 
   console.log("Sample users inserted.");
