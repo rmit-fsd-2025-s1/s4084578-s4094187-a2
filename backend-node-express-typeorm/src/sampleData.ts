@@ -90,20 +90,20 @@ export const sampleCourses = [
 ];
 
 export const sampleTutorApplications = [
-  { selected: false, tutorRole: true, tutor: 0, courseID: 0 },
-  { selected: false, tutorRole: false, tutor: 0, courseID: 1 },
-  { selected: false, tutorRole: true, tutor: 0, courseID: 2 },
-  { selected: false, tutorRole: true, tutor: 0, courseID: 3 },
-  { selected: false, tutorRole: false, tutor: 5, courseID: 0 },
-  { selected: false, tutorRole: false, tutor: 5, courseID: 1 },
-  { selected: false, tutorRole: true, tutor: 5, courseID: 2 },
-  { selected: false, tutorRole: true, tutor: 5, courseID: 3 },
-  { selected: false, tutorRole: true, tutor: 5, courseID: 0 }
+  { selected: false, tutorRole: true, tutor: 1, courseID: 1 },
+  { selected: false, tutorRole: false, tutor: 1, courseID: 2 },
+  { selected: false, tutorRole: true, tutor: 1, courseID: 3 },
+  { selected: false, tutorRole: true, tutor: 1, courseID: 4 },
+  { selected: false, tutorRole: false, tutor: 6, courseID: 1 },
+  { selected: false, tutorRole: false, tutor: 6, courseID: 2 },
+  { selected: false, tutorRole: true, tutor: 6, courseID: 3 },
+  { selected: false, tutorRole: true, tutor: 6, courseID: 4 },
+  { selected: false, tutorRole: true, tutor: 2, courseID: 1 }
 ];
 
 export const sampleLecturerCourses = [
-  { lecturerId: 0, courseId: 1 },
-  { lecturerId: 1, courseId: 0 },
+  { lecturerId: 1, courseId: 1 },
+  { lecturerId: 2, courseId: 0 },
   { lecturerId: 3, courseId: 3 },
   { lecturerId: 4, courseId: 2 }
 ];

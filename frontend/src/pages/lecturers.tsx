@@ -53,7 +53,6 @@ export default function Home() {
         const response = await fetch(`http://localhost:5050/api/search?searchTerm=${encodeURIComponent(searchTerm)}`);
         
         const data = await response.json();
-        console.log("Fetched tutors:", data);
         const flatData = flattenTutorsByCourse(data);
         setTutors(flatData);
 

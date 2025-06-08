@@ -173,35 +173,46 @@ router.get("/lecturers", async (req, res) => {
 });
 
 router.get("/search", async (req, res) => {
-  let { searchTerm } = req.query;
+  let rawSearchTerm = req.query.searchTerm;
+  const searchTerm = (rawSearchTerm || "").toString().toLowerCase().trim();
 
-  
   try {
-    // If no searchTerm, return all tutors
-    if (!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim() === '') {
-      const allTutors = await tutorRepo.find();
-      res.json(allTutors);
-      return;
+    const query = tutorRepo
+      .createQueryBuilder("tutor")
+      .leftJoin("tutor_application", "app", "app.tutorId = tutor.id")
+      .leftJoin("course", "course", "course.id = app.courseId")
+      .select([
+        "tutor.id AS id",
+        "tutor.name AS name",
+        "tutor.skillsList AS skillsList",
+        "tutor.academicCredentials AS academicCredentials",
+        "tutor.availableFullTime AS availableFullTime",
+        "tutor.timesSelected AS timesSelected",
+        "tutor.blocked AS blocked",
+        "tutor.comments AS comments",
+        "GROUP_CONCAT(DISTINCT course.name SEPARATOR ', ') AS courses"
+      ])
+      .groupBy("tutor.id");
+
+    if (searchTerm !== "") {
+      query.where(`
+        LOWER(tutor.name) LIKE :searchTerm OR
+        LOWER(tutor.skillsList) LIKE :searchTerm OR
+        LOWER(tutor.academicCredentials) LIKE :searchTerm OR
+        LOWER(course.name) LIKE :searchTerm
+      `, { searchTerm: `%${searchTerm}%` });
     }
 
-    // Lowercase the searchTerm safely
-    searchTerm = searchTerm.toLowerCase();
-    
-    const tutors = await tutorRepo
-      .createQueryBuilder('tutor')
-      .where('LOWER(tutor.name) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-      .orWhere('LOWER(tutor.skills) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-      .orWhere('LOWER(tutor.creds) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-      .orWhere('LOWER(tutor.available) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-      .orWhere('LOWER(tutor.courses) LIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-      .getMany();
-
-    res.json(tutors);
+    const result = await query.getRawMany();
+    res.json(result);
   } catch (error) {
-    console.error('Error fetching tutors:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error fetching tutors:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-  });
+});
+
+
+
 
 router.put('/tutors/:id', async (req, res) => {
   const tutorId = parseInt(req.params.id);
@@ -223,37 +234,6 @@ router.put('/tutors/:id', async (req, res) => {
   } catch (error) {
     console.error('Failed to update tutor:', error);
     res.status(500).json({ message: 'Error updating tutor' });
-  }
-});
-
-router.get("/tutor-applications", async (req, res) => {
-  try {
-    const applications = await AppDataSource
-      .getRepository("tutor_application")
-      .createQueryBuilder("app")
-      .leftJoinAndSelect("app.tutor", "tutor")
-      .leftJoinAndSelect("app.course", "course")
-      .select([
-        "app.id",
-        "app.selected",
-        "app.tutorRole",
-        "tutor.id",
-        "tutor.name",
-        "tutor.email",
-        "tutor.skillsList",
-        "tutor.academicCredentials",
-        "tutor.availableFullTime",
-        "tutor.timesSelected",
-        "tutor.blocked",
-        "course.course_id",
-        "course.name"
-      ])
-      .getMany();
-
-    res.json(applications);
-  } catch (error) {
-    console.error("Error fetching tutor applications:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
 });
 
