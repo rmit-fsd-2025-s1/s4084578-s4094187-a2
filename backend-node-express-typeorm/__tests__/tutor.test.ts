@@ -46,5 +46,6 @@ describe("GET /api/tutors", () => {
 
     const res = await request(app).get("/api/tutors/JohnDoe@rmit.edu.au")
     expect(res.status).toBe(200)
+    expect(res.body.name).toBe("John Doe")
   });
 });
