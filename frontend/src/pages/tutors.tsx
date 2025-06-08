@@ -27,14 +27,6 @@ export default function Home() {
     Creds: "",
   })
 
-  // useState for the data currently in the form
-  const [formData, setFormData] = useState<Tutor>({
-    Name: "",
-    Available: "",
-    Skills: "",
-    Creds: "",
-  });
-
   // useState to help verify that there is a logged in tutor
   const [tutorLoginExists, setTutorLoginExists] = useState(false);
 
@@ -78,18 +70,6 @@ export default function Home() {
       });
     }
   }, [])
-
-  // when currentTutor changes, update the formData useState to ensure that the form is pre-filled
-  useEffect(() => {
-    if (currentTutor) {
-      setFormData(currentTutor);
-    }
-  }, [currentTutor]);
-
-  // function to process the form
-  const updateTutorDetails = async () => {
-    alert("Not implemented")
-  }
 
   const handleApplication = async (courseDbId: string, role: boolean) => {
   const email = localStorage.getItem("account")
